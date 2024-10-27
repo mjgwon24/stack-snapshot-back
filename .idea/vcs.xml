@@ -2,5 +2,7 @@
 <project version="4">
   <component name="VcsDirectoryMappings">
     <mapping directory="" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/org.crac" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/src/main/stack-snap-shot-front/org.crac" vcs="Git" />
   </component>
 </project>

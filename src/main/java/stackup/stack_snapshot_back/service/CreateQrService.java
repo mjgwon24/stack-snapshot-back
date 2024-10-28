@@ -5,6 +5,7 @@ import com.google.zxing.WriterException;
 import com.google.zxing.client.j2se.MatrixToImageWriter;
 import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.QRCodeWriter;
+import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.stereotype.Service;
@@ -23,12 +24,19 @@ public class CreateQrService {
 
     @Value("${file.upload-dir}")
     private String STATIC_DIR;
-    private final String qrCodeImagePath = STATIC_DIR + "/final-photo/";
+
+    private String qrCodeImagePath;
 
     @Value("${server.url}")
     private String serverUrl;
 
     private final FileNameGenerator fileNameGenerator = new FileNameGenerator();
+
+    // 프로그램이 실행되면 변수 초기화
+    @PostConstruct
+    public void initPaths() {
+        qrCodeImagePath = STATIC_DIR + "/final-photo/";
+    }
 
     /**
      * 특정 그룹 디렉토리에서 가장 최근에 생성된 파일 찾기

@@ -21,7 +21,7 @@ import java.util.Comparator;
 @Service
 public class CreateQrService {
 
-    @Value("${file.upload-dir}")
+    @Value("${file.complete-dir}")
     private String qrCodeImagePath;
 
     @Value("${server.url}")

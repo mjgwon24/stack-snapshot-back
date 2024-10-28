@@ -36,7 +36,8 @@ public class PicturePageRestController {
      *
      * @param imageFiles 업로드할 이미지 파일 리스트
      * @return 업로드 결과를 포함한 응답 (teamId 반환)
-     */@PostMapping("/upload")
+     */
+    @PostMapping("/origin-upload")
     @Operation(summary = "사진 업로드", description = "사진을 업로드하는 API, 다중 파일 업로드 가능")
     public ResponseEntity<?> uploadPhotos(
             @RequestPart("image") List<MultipartFile> imageFiles) {

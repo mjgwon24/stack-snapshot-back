@@ -5,12 +5,23 @@ import jakarta.annotation.PostConstruct;
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import stackup.stack_snapshot_back.service.SelectFrameService;
+
+import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,6 +33,7 @@ import java.util.List;
  */
 
 @RestController
+@CrossOrigin(origins = {"http://localhost:3000", "http://localhost:8080"})
 @RequestMapping("/api")
 @PropertySource("classpath:application.yml") //application.yml에 들어있는 데이터 사용, Service에서는 사용 못하기 때문에 넘겨줘야함
 public class SelectFrameRestController {
@@ -56,19 +68,27 @@ public class SelectFrameRestController {
         }
     }
 
-    @Data
-    public static class FileUploadDTO {
-        private List<MultipartFile> file;
-        private String GroupID;
-    }
+
 
     //JSON 객체를 반환하기 위한 클래스
     @Data
     private static class SelectFrameResponseData {
         String GroupID;
-        List<String> FileNames = new ArrayList<>();
+        //        List<String> FileNames = new ArrayList<>();
         String OutputPath;
         public SelectFrameResponseData() {}
+    }
+
+    public static long getCurrentTimestamp() {
+        return Instant.now().getEpochSecond();
+    }
+
+    public static long getTimestampFromString(String dateTimeString) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss");
+
+        LocalDateTime dateTime = LocalDateTime.parse(dateTimeString, formatter);
+
+        return dateTime.toEpochSecond(ZoneOffset.UTC);
     }
 
 
@@ -83,6 +103,7 @@ public class SelectFrameRestController {
      * @throws IllegalArgumentException
      * @throws IOException
      */
+    @CrossOrigin(origins = "http://localhost:3000")
     @Tag(name="Image Upload API",description = "찍은 이미지 업로드, GroupID값, FrameID 받아옴, 이미지 경로 리스트, 최종 이미지 경로, 그룹ID 반환")
     @PostMapping("/upload")
     public ResponseEntity<SelectFrameResponseData> uploadFile(@ModelAttribute SelectFrameRequestDTO requestDto) throws IllegalArgumentException,IOException {
@@ -101,8 +122,23 @@ public class SelectFrameRestController {
 
         String combinedImage_path = selectFrameService.mergeImages(FileNames,GroupID,FrameID,UPLOAD_PATH,FRAME_PATH,OUTPUT_PATH);
         Response.OutputPath = combinedImage_path;
-        Response.FileNames = FileNames;
+        for (String fileName : FileNames) {
+            File file = new File(UPLOAD_PATH+fileName);
+            if (file.exists()) {
+                if (file.delete()) {
+                    System.out.println(fileName + " 파일이 삭제되었습니다.");
+                } else {
+                    System.out.println(fileName + " 파일을 삭제하지 못했습니다.");
+                }
+            } else {
+                System.out.println(fileName + " 파일이 존재하지 않습니다.");
+            }
+        }
+
         return new ResponseEntity<>(Response, HttpStatus.OK);
     }
+
+
+
 }
 

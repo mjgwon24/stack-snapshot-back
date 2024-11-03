@@ -13,7 +13,9 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.web.multipart.MultipartFile;
@@ -26,8 +28,9 @@ import stackup.stack_snapshot_back.util.FileNameGenerator;
  */
 @Service
 public class SelectFrameService {
-    private static final Logger log = LoggerFactory.getLogger(Log.class);
-
+    final int FONTSIZE = 12;
+    // 12 good
+    final String FONTNAME = "Pretendard";
     // 저장될 이미지 포멧
     final String EXT = "png";
 
@@ -38,13 +41,35 @@ public class SelectFrameService {
             {272,328},//frame3 272x328
             {340,273}//frame4 340x273
     };
+    // 프레임별 텍스트 색
+    final Color[] TEXT_COLOR = {
+            new Color(0, 0, 0),//frame1 new Color(127, 127, 127)
+            new Color(255, 255, 255),//frame2
+            new Color(255, 255, 255),//frame3
+            new Color(255, 255, 255),//frame4
+    };
+    // 프레임별 텍스트 오프셋
+    final int[][] TEXT_OFFSET = {
+            {
+                    517,790
+            },//frame1
+            {
+                    0,0
+            },//frame2
+            {
+                    0,0
+            },//frame3
+            {
+                    0,0
+            }//frame4
+    };
     // 프레임별 이미지 오프셋
     final int[][][] OFFSET = {
             {
-                {20,22},
-                {308,22},
-                {20,412},
-                {308,412},
+                    {20,22},
+                    {308,22},
+                    {20,412},
+                    {308,412},
             },//frame1
             {
                     {21,21},
@@ -70,10 +95,60 @@ public class SelectFrameService {
 
 
     /**
-     *
+     * 현재 날짜 문자열을 출력합니다 (2000.01.01 형식)
+     * @return 현재 날짜 문자열
+     */
+    public String generateCurrentDate() {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd");
+        return sdf.format(new Date());
+    }
+
+    /**
+     * 입력받은 문자열의 사각영역을 반환합니다
+     * @param text
+     * @param font
+     * @return Rectangle
+     */
+    private Rectangle getFontrect(String text, Font font){
+        BufferedImage img = new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB);
+        Graphics2D g2d = img.createGraphics();
+        g2d.setFont(font);
+        FontMetrics fm = g2d.getFontMetrics();
+        int width = fm.stringWidth(text);
+        int height = fm.getHeight();
+        g2d.dispose();
+
+        return new Rectangle(0, 0, width, height);
+    }
+
+    /**
+     * 이미지에서 2D 객체를 얻어옵니다
+     * @param img
+     * @return BufferedImage
+     */
+    private Graphics2D getG2D(BufferedImage img)
+    {
+        Graphics2D g2d = img.createGraphics();
+        g2d.setRenderingHint(RenderingHints.KEY_ALPHA_INTERPOLATION, RenderingHints.VALUE_ALPHA_INTERPOLATION_QUALITY);
+        g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        g2d.setRenderingHint(RenderingHints.KEY_COLOR_RENDERING, RenderingHints.VALUE_COLOR_RENDER_QUALITY);
+        g2d.setRenderingHint(RenderingHints.KEY_DITHERING, RenderingHints.VALUE_DITHER_ENABLE);
+        g2d.setRenderingHint(RenderingHints.KEY_FRACTIONALMETRICS, RenderingHints.VALUE_FRACTIONALMETRICS_ON);
+        g2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+        g2d.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
+        g2d.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL, RenderingHints.VALUE_STROKE_PURE);
+
+        return g2d;
+    }
+
+    /** 선택된 이미지 경로와 GroupID, FrameID를 통해 완성 사진을 생성하는 서비스
      * @param imageFiles
+     * @param GroupID
      * @param FrameId
-     * @return Finalfilename
+     * @param UPLOAD_PATH
+     * @param FRAME_PATH
+     * @param OUTPUT_PATH
+     * @return Date
      * @throws IOException
      */
     public String mergeImages(List<String> imageFiles,String GroupID,int FrameId,String UPLOAD_PATH,String FRAME_PATH,String OUTPUT_PATH) throws IOException {
@@ -90,10 +165,13 @@ public class SelectFrameService {
         if (imageFiles.size() != ImageCount) {
             throw new IllegalArgumentException("이미지 파일의 개수가 프레임에 맞지 않습니다. : "+imageFiles.size()+"/"+ImageCount);
         }
+
         try {
             // 프레임 이미지 로드
             BufferedImage baseImage = ImageIO.read(new File(FRAME_PATH +FrameId+"."+EXT));
+
             Graphics2D frame = baseImage.createGraphics();
+
 
             // 프레임에 들어갈 사진의 크기
             int image_width,image_height;
@@ -110,15 +188,41 @@ public class SelectFrameService {
 
             // 프레임에 들어갈 이미지의 수 만큼 반복
             for(int i=0;i<ImageCount;i++){
-                Image = ImageIO.read(new File(UPLOAD_PATH+"/"+GroupID+"/"+imageFiles.get(i)));
+                Image = ImageIO.read(new File(UPLOAD_PATH+imageFiles.get(i)));
                 image_width = Image.getWidth(null);
                 image_height = Image.getHeight(null);
+
+
                 Offset_X = (image_width-result_Image_Width)/2;
                 Offset_Y = (image_height-result_Image_Height)/2;
 
+
                 Image = Image.getSubimage(Offset_X,Offset_Y,result_Image_Width,result_Image_Height);
+
                 frame.drawImage(Image,OFFSET[FrameId-1][i][0],OFFSET[FrameId-1][i][1],null);
+
             }
+            String current = generateCurrentDate();
+            // Font.PLAIN 부분 {Font. PLAIN,Font. BOLD,Font. ITALIC} 중 선택 가능
+            Font font = new Font(FONTNAME, Font.PLAIN,FONTSIZE);
+            Rectangle r = getFontrect(current, font);
+
+            int width = (int) r.getWidth();
+            int height = (int) r.getHeight();
+
+            BufferedImage img = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+            Graphics2D g2d = getG2D(img);
+            g2d.setFont(font);
+            FontMetrics fm = g2d.getFontMetrics();
+            g2d.setColor(TEXT_COLOR[FrameId-1]);
+            g2d.drawString(current, 0, fm.getAscent());
+
+
+            frame.drawImage(img,TEXT_OFFSET[FrameId-1][0],TEXT_OFFSET[FrameId-1][1],null);
+            g2d.dispose();
+
+
+
             //프레임 위에 사진 이미지 작성 종료 후 닫기
             frame.dispose();
 
@@ -130,18 +234,26 @@ public class SelectFrameService {
 
             //최종 파일 생성 및 이미지 쓰기
             File outputFile = new File(OUTPUT_PATH+Finalfilename);
+
             ImageIO.write(baseImage, EXT, outputFile);
 
-            return Finalfilename;
+            return Finalfilename.split("final_")[1].split("\\.")[0]; // date 부분만 반환
         } catch (Exception e) {
             throw new IOException("이미지 파일 읽기중 문제가 생겼습니다.:"+e);
         }
     }
+
+    /**
+     * 파일을 업로드 해서 저장된 경로 리스트를 반환하는 서비스
+     * @param UPLOAD_PATH
+     * @param GroupID
+     * @param files
+     * @return FileNames
+     */
     public List<String> FileUpload(String UPLOAD_PATH,String GroupID,List<MultipartFile> files){
         List<String> FileNames = new ArrayList<>();
 
         Path uploadPath = Paths.get(UPLOAD_PATH);
-        System.out.println(UPLOAD_PATH);
 
         // uploadPath에 해당하는 위치가 없거나 파일이라면
         if (!Files.exists(uploadPath) || !Files.isDirectory(uploadPath)) {
@@ -169,8 +281,7 @@ public class SelectFrameService {
 
                 // 파일명 및 파일 경로 생성
                 String filename = fileNameGenerator.generateOriginalFileName(GroupID,index,file.getOriginalFilename());
-                Path path = Paths.get(uploadPath+"/"+GroupID+"/"+filename);
-                System.out.println(uploadPath+"/"+GroupID+"/"+filename);
+                Path path = Paths.get(uploadPath+"/"+filename);
                 // 파일에 데이터 쓰기
                 Files.write(path, bytes);
 

@@ -47,7 +47,6 @@ public class PicturePageRestController {
                 MultipartFile image = images.get(i);
 
 
-                // 파일 업로드 및 저장된 파일 이름 가져오기
                 String fileName = picturePageService.uploadFile(image, i + 1);
                 String fileUrl = "/stack-photo/" + fileName;
                 fileUrls.add(fileUrl);

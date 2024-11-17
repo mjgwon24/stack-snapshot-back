@@ -32,10 +32,12 @@ public class PicturePageService {
             throw new IOException("Failed to create upload directory: " + uploadDirectory);
         }
 
-        String groupId = "1";
+        // 파일명 생성
+        String groupId = "1"; // 그룹 ID 예시
         String fileName = fileNameGenerator.generateOriginalFileName(groupId, photoNumber, file.getOriginalFilename());
         Path filePath = Paths.get(uploadDirectory, fileName);
 
+        // 파일 저장
         file.transferTo(filePath.toFile());
         return fileName;
     }
@@ -55,3 +57,4 @@ public class PicturePageService {
         return fileUrls;
     }
 }
+

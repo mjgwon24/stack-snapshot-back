@@ -18,12 +18,60 @@
 
 ---
 
-## 🛠️ 기술 스택
+## 🛠️ 개발 환경
 
-- **언어:** Java
-- **프레임워크:** Spring Boot
-- **빌드 도구:** Gradle
-- **기타:** REST API (클라이언트와의 데이터 통신)
+- **Front-end**:  
+  ![HTML](https://img.shields.io/badge/HTML-E34F26?style=flat&logo=html5&logoColor=white)  
+  ![React](https://img.shields.io/badge/React-61DAFB?style=flat&logo=react&logoColor=black)  
+  ![styled-components](https://img.shields.io/badge/styled--components-DB7093?style=flat&logo=styled-components&logoColor=white)  
+  ![Recoil](https://img.shields.io/badge/Recoil-007ACC?style=flat&logo=react&logoColor=white)
+
+- **Back-end**:  
+  제공된 API 활용
+
+- **버전 및 이슈 관리**:  
+  ![GitHub](https://img.shields.io/badge/GitHub-181717?style=flat&logo=github&logoColor=white)  
+  ![GitHub Issues](https://img.shields.io/badge/Issues-FE5000?style=flat&logo=github&logoColor=white)  
+  ![GitHub Projects](https://img.shields.io/badge/Projects-0366D6?style=flat&logo=github&logoColor=white)
+
+- **협업 툴**:  
+  ![Discord](https://img.shields.io/badge/Discord-5865F2?style=flat&logo=discord&logoColor=white)  
+  ![Notion](https://img.shields.io/badge/Notion-000000?style=flat&logo=notion&logoColor=white)
+
+- **서비스 배포 환경**:  
+  ![Netlify](https://img.shields.io/badge/Netlify-00C7B7?style=flat&logo=netlify&logoColor=white)
+
+---
+
+## 🔧 기술 스택
+
+### Language  
+![Java](https://img.shields.io/badge/Java-007396?style=flat&logo=java&logoColor=white)
+
+### Backend  
+![Spring Boot](https://img.shields.io/badge/Spring%20Boot-6DB33F?style=flat&logo=spring-boot&logoColor=white)  
+![Gradle](https://img.shields.io/badge/Gradle-02303A?style=flat&logo=gradle&logoColor=white)  
+![REST API](https://img.shields.io/badge/REST%20API-005571?style=flat&logo=rest&logoColor=white)
+
+### Cooperation  
+![GitHub](https://img.shields.io/badge/GitHub-181717?style=flat&logo=github&logoColor=white)  
+![GitHub Issues](https://img.shields.io/badge/Issues-FE5000?style=flat&logo=github&logoColor=white)  
+![GitHub Projects](https://img.shields.io/badge/Projects-0366D6?style=flat&logo=github&logoColor=white)
+
+---
+
+## 🔄 Development Workflow
+
+### 브랜치 전략
+
+우리의 브랜치 전략은 Git Flow를 기반으로 하며, 다음과 같은 브랜치를 사용합니다:
+
+- **Main Branch**:  
+    - 배포 가능한 상태의 코드를 유지합니다.  
+    - 모든 배포는 이 브랜치에서 이루어집니다.
+- **{name} Branch**:  
+    - 팀원 각자의 개발 브랜치입니다.  
+    - 모든 기능 개발은 이 브랜치에서 이루어집니다.
 
 ---
 
@@ -32,6 +80,42 @@
 - **사진 찍기:** 사용자는 다양한 필터를 적용하여 사진을 찍을 수 있습니다.
 - **추억 저장:** 최종적으로 생성된 사진을 다운로드할 수 있습니다.
 - **QR 코드 제공:** 사진이 생성된 후, 다운로드를 위한 QR 코드가 제공됩니다.
+
+---
+
+## 📅 개발 기간 및 작업 관리
+
+- **개발 기간**: 2024년 10월 1일 ~ 2024년 10월 10일  
+- **작업 관리**: GitHub Issues 및 GitHub Project를 활용하여 작업을 분담하고 진행 상황을 공유합니다.
+
+---
+
+## 📑 페이지별 기능
+
+### 초기 화면
+![기능 사진 삽입 예정]
+
+- **설명**: 초기 화면에서는 서비스 소개 및 메뉴 선택 기능을 제공합니다.
+
+### 사진 촬영
+![기능 사진 삽입 예정]
+
+- **설명**: 사용자는 카메라를 통해 실시간으로 사진을 촬영할 수 있습니다.
+
+### 사진 선택
+![기능 사진 삽입 예정]
+
+- **설명**: 사용자가 원하는 사진을 선택하고 편집할 수 있습니다.
+
+### 프레임 선택
+![기능 사진 삽입 예정]
+
+- **설명**: 다양한 프레임 중에서 원하는 디자인을 선택하여 사진에 적용할 수 있습니다.
+
+### QR 코드 다운로드
+![기능 사진 삽입 예정]
+
+- **설명**: QR 코드를 생성하여 사진 다운로드 링크를 제공합니다.
 
 ---
 

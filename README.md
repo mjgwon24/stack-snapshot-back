@@ -20,14 +20,9 @@
 
 ## 🛠️ 개발 환경
 
-- **Front-end**:  
-  ![HTML](https://img.shields.io/badge/HTML-E34F26?style=flat&logo=html5&logoColor=white)  
-  ![React](https://img.shields.io/badge/React-61DAFB?style=flat&logo=react&logoColor=black)  
-  ![styled-components](https://img.shields.io/badge/styled--components-DB7093?style=flat&logo=styled-components&logoColor=white)  
-  ![Recoil](https://img.shields.io/badge/Recoil-007ACC?style=flat&logo=react&logoColor=white)
-
 - **Back-end**:  
   제공된 API 활용
+  ![Swagger](https://img.shields.io/badge/Swagger-85EA2D?style=flat&logo=swagger&logoColor=black)를 통한 API 문서화 및 테스트
 
 - **버전 및 이슈 관리**:  
   ![GitHub](https://img.shields.io/badge/GitHub-181717?style=flat&logo=github&logoColor=white)  
@@ -51,6 +46,7 @@
 ### Backend  
 ![Spring Boot](https://img.shields.io/badge/Spring%20Boot-6DB33F?style=flat&logo=spring-boot&logoColor=white)  
 ![Gradle](https://img.shields.io/badge/Gradle-02303A?style=flat&logo=gradle&logoColor=white)  
+![Swagger](https://img.shields.io/badge/Swagger-85EA2D?style=flat&logo=swagger&logoColor=black)  
 ![REST API](https://img.shields.io/badge/REST%20API-005571?style=flat&logo=rest&logoColor=white)
 
 ### Cooperation  
@@ -85,7 +81,7 @@
 
 ## 📅 개발 기간 및 작업 관리
 
-- **개발 기간**: 2024년 10월 1일 ~ 2024년 10월 10일  
+- **개발 기간**: 2024년 10월 13일 ~ 2024년 11월 20일  
 - **작업 관리**: GitHub Issues 및 GitHub Project를 활용하여 작업을 분담하고 진행 상황을 공유합니다.
 
 ---

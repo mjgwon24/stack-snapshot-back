@@ -1,7 +1,7 @@
 
 # 🧑‍💻 Stack Snapshot (Backend) - 사진 추억 남기기 서비스
 
-![시작 화면 삽입 예정]
+![시작 화면 삽입 예정](https://i.imgur.com/Dhhtz1z.png)
 
 [![Contributors](https://img.shields.io/badge/contributors-4-brightgreen)](#-기여자-contributors)  
 

@@ -36,16 +36,16 @@
 
 ## 🔧 기술 스택
 
-### Language  
+- ### Language  
 ![Java](https://img.shields.io/badge/Java-007396?style=flat&logo=java&logoColor=white)
 
-### Backend  
+- ### Backend  
 ![Spring Boot](https://img.shields.io/badge/Spring%20Boot-6DB33F?style=flat&logo=spring-boot&logoColor=white)  
 ![Gradle](https://img.shields.io/badge/Gradle-02303A?style=flat&logo=gradle&logoColor=white)  
 ![Swagger](https://img.shields.io/badge/Swagger-85EA2D?style=flat&logo=swagger&logoColor=black)  
 ![REST API](https://img.shields.io/badge/REST%20API-005571?style=flat&logo=rest&logoColor=white)
 
-### Cooperation  
+- ### Cooperation  
 ![GitHub](https://img.shields.io/badge/GitHub-181717?style=flat&logo=github&logoColor=white)  
 ![GitHub Issues](https://img.shields.io/badge/Issues-FE5000?style=flat&logo=github&logoColor=white)  
 ![GitHub Projects](https://img.shields.io/badge/Projects-0366D6?style=flat&logo=github&logoColor=white)

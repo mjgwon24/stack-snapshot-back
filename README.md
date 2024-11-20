@@ -1,6 +1,8 @@
 
 # 🧑‍💻 Stack Snapshot (Backend) - 사진 추억 남기기 서비스
 
+![시작 화면 삽입 예정]
+
 [![Contributors](https://img.shields.io/badge/contributors-4-brightgreen)](#-기여자-contributors)  
 
 **Stack Snapshot**은 '인생네컷'과 유사한 기능을 제공하는 사진 추억 남기기 서비스로, **경북 2024 해커톤**에서 참가자들의 소중한 추억을 기록해주는 프로젝트입니다. 사용자는 다양한 프레임을 적용해 사진을 찍고, 소중한 추억을 남길 수 있습니다. 이 프로젝트의 백엔드는 **Spring Boot**와 **JPA**를 기반으로 이루어져있습니다.
@@ -20,16 +22,16 @@
 
 ## 🛠️ 개발 환경
 
-### 버전 및 이슈 관리:  
+### 버전 및 이슈 관리
   ![GitHub](https://img.shields.io/badge/GitHub-181717?style=flat&logo=github&logoColor=white)  
   ![GitHub Issues](https://img.shields.io/badge/Issues-FE5000?style=flat&logo=github&logoColor=white)  
   ![GitHub Projects](https://img.shields.io/badge/Projects-0366D6?style=flat&logo=github&logoColor=white)
 
-### 협업 툴:  
+### 협업 툴
   ![Discord](https://img.shields.io/badge/Discord-5865F2?style=flat&logo=discord&logoColor=white)  
   ![Notion](https://img.shields.io/badge/Notion-000000?style=flat&logo=notion&logoColor=white)
 
-### 서비스 배포 환경:  
+### 서비스 배포 환경
   ![Netlify](https://img.shields.io/badge/Netlify-00C7B7?style=flat&logo=netlify&logoColor=white)
 
 ---
@@ -83,11 +85,6 @@
 ---
 
 ## 📑 페이지별 기능
-
-### 초기 화면
-![기능 사진 삽입 예정]
-
-- **설명**: 초기 화면에서는 서비스 소개 및 메뉴 선택 기능을 제공합니다.
 
 ### 사진 촬영
 ![기능 사진 삽입 예정]

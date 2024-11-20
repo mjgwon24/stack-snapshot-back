@@ -24,7 +24,7 @@ import org.slf4j.LoggerFactory;
 public class PicturePageService {
 
     private static final Logger logger = LoggerFactory.getLogger(PicturePageService.class);
-    private static final String ORIGINAL_DIR = "original"; // 하위 디렉토리 이름
+    private static final String ORIGINAL_DIR = "original-photo"; // 하위 디렉토리 이름 변경
 
     @Value("${file.upload-dir}")
     private String uploadDirectory;
@@ -39,11 +39,11 @@ public class PicturePageService {
      * @throws IOException 파일 저장 실패 시 예외
      */
     public String uploadFile(MultipartFile file, int photoNumber) throws IOException {
-        // /original 디렉터리 경로 생성
+
         Path originalDirectoryPath = Paths.get(uploadDirectory, ORIGINAL_DIR);
         File originalDirectory = originalDirectoryPath.toFile();
 
-        // 디렉토리가 존재하지 않으면 생성
+
         if (!originalDirectory.exists()) {
             boolean dirsCreated = originalDirectory.mkdirs();
             if (dirsCreated) {
@@ -54,8 +54,7 @@ public class PicturePageService {
             }
         }
 
-        // 파일명 생성
-        String groupId = "1"; // 그룹 ID 예시
+        String groupId = "1";
         String originalFilename = file.getOriginalFilename();
         if (originalFilename == null) {
             throw new IOException("Original filename is null");
@@ -63,7 +62,7 @@ public class PicturePageService {
         String fileName = fileNameGenerator.generateOriginalFileName(groupId, photoNumber, originalFilename);
         Path filePath = originalDirectoryPath.resolve(fileName);
 
-        // 파일 저장
+
         try {
             file.transferTo(filePath.toFile());
             logger.info("File saved: {}", filePath);

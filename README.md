@@ -20,10 +20,6 @@
 
 ## 🛠️ 개발 환경
 
-- **Back-end**:  
-  제공된 API 활용
-  ![Swagger](https://img.shields.io/badge/Swagger-85EA2D?style=flat&logo=swagger&logoColor=black)를 통한 API 문서화 및 테스트
-
 - **버전 및 이슈 관리**:  
   ![GitHub](https://img.shields.io/badge/GitHub-181717?style=flat&logo=github&logoColor=white)  
   ![GitHub Issues](https://img.shields.io/badge/Issues-FE5000?style=flat&logo=github&logoColor=white)  

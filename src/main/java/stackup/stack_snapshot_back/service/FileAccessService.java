@@ -52,8 +52,9 @@ public class FileAccessService {
             result_filename += "group_" + groupid + "_final_" + date + ".png";
         }
         else{
-            result_filename += "group_" + groupid + "_" + date + "_" + index + ".jpg";
+            result_filename += "group_" + groupid + "_" + date + "_" + index + ".png";
         }
+        System.out.println(result_filename);
         File file = new File(result_filename);
 
 

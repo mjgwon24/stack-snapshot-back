@@ -1,0 +1,10 @@
+spring:
+  application:
+    name: stack-snapshot-back
+
+file:
+  upload-dir: /home/stack-photo
+
+server:
+  cross-origin-url: https://stack4cut.online
+  url: https://api.stack4cut.online

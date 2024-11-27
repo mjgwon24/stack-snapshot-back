@@ -28,24 +28,30 @@ import stackup.stack_snapshot_back.util.FileNameGenerator;
  */
 @Service
 public class SelectFrameService {
-    final int FONTSIZE = 12;
-    // 12 good
     final String FONTNAME = "Pretendard";
     // 저장될 이미지 포멧
     final String EXT = "png";
 
+    final int[] FONT_SIZE_AT_FRAME = {
+            12,
+            18,
+            12,
+            12,
+    };
+
     // 프레임별 이미지 개별 크기
     final int[][] IMAGE_SIZE_AT_FRAME = {
             {273,373},//frame1 273x373
-            {272,205},//frame2 272x205
+//            {272,205},//frame2 272x205
+            {270,330},//frame2 272x205
             {272,328},//frame3 272x328
-            {340,273}//frame4 340x273
+            {340,272}//frame4 340x273
     };
     // 프레임별 텍스트 색
     final Color[] TEXT_COLOR = {
-            new Color(0, 0, 0),//frame1 new Color(127, 127, 127)
-            new Color(255, 255, 255),//frame2
-            new Color(255, 255, 255),//frame3
+            new Color(235,235,235),//frame1 EBEBEB 235 235 235
+            new Color(113,122,127),//frame2 717A7F 113 122 127
+            new Color(191, 170, 15),//frame3 BFAA0F 191 170 15
             new Color(255, 255, 255),//frame4
     };
     // 프레임별 텍스트 오프셋
@@ -54,10 +60,10 @@ public class SelectFrameService {
                     517,790
             },//frame1
             {
-                    0,0
+                    28,860
             },//frame2
             {
-                    0,0
+                    514,885
             },//frame3
             {
                     0,0
@@ -72,24 +78,22 @@ public class SelectFrameService {
                     {308,412},
             },//frame1
             {
-                    {21,21},
-                    {309,21},
-                    {21,237},
-                    {309,237},
-                    {21,452},
-                    {309,452},
+                    {20,80},
+                    {310,80},
+                    {20,430},
+                    {310,430}
             },//frame2
             {
                     {21,34},
                     {21,383},
                     {308,204},
-                    {308,553},
+                    {308,551},
             },//frame3
             {
-                    {31,19},
-                    {387,19},
+                    {31,20},
+                    {388,20},
                     {31,307},
-                    {387,307},
+                    {388,307},
             },//frame4
     };
 
@@ -167,59 +171,73 @@ public class SelectFrameService {
         }
 
         try {
+            BufferedImage baseImage = null;
             // 프레임 이미지 로드
-            BufferedImage baseImage = ImageIO.read(new File(FRAME_PATH +FrameId+"."+EXT));
+            if(FrameId!=4){
+                baseImage = ImageIO.read(new File(FRAME_PATH +FrameId+"."+EXT));
+            }
+            else{
+                // FrameId가 4일 현재 날짜(일)에 따라 불러옴
+                if(new Date().getDate()!=1){
+                    baseImage = ImageIO.read(new File(FRAME_PATH +FrameId+"-1."+EXT));
+                }
+                else{
+                    baseImage = ImageIO.read(new File(FRAME_PATH +FrameId+"-2."+EXT));
+                }
+            }
+
 
             Graphics2D frame = baseImage.createGraphics();
-
-
-            // 프레임에 들어갈 사진의 크기
-            int image_width,image_height;
 
             // 프레임에 들어갈 사진 저장하는 변수
             BufferedImage Image;
 
-            // FrameId에 해당하는 프레임에 들어갈 이미지의 가로, 세로 크기를 가져옴
-            int result_Image_Width=IMAGE_SIZE_AT_FRAME[FrameId-1][0];
-            int result_Image_Height=IMAGE_SIZE_AT_FRAME[FrameId-1][1];
-
-            int Offset_X;
-            int Offset_Y;
 
             // 프레임에 들어갈 이미지의 수 만큼 반복
             for(int i=0;i<ImageCount;i++){
+                System.out.println(i);
                 Image = ImageIO.read(new File(UPLOAD_PATH+imageFiles.get(i)));
-                image_width = Image.getWidth(null);
-                image_height = Image.getHeight(null);
-
-
-                Offset_X = (image_width-result_Image_Width)/2;
-                Offset_Y = (image_height-result_Image_Height)/2;
-
-
-                Image = Image.getSubimage(Offset_X,Offset_Y,result_Image_Width,result_Image_Height);
-
                 frame.drawImage(Image,OFFSET[FrameId-1][i][0],OFFSET[FrameId-1][i][1],null);
 
             }
-            String current = generateCurrentDate();
-            // Font.PLAIN 부분 {Font. PLAIN,Font. BOLD,Font. ITALIC} 중 선택 가능
-            Font font = new Font(FONTNAME, Font.PLAIN,FONTSIZE);
-            Rectangle r = getFontrect(current, font);
 
-            int width = (int) r.getWidth();
-            int height = (int) r.getHeight();
+            BufferedImage second_baseImage;
+            // 프레임 이미지 로드
+            if(FrameId!=4){
+                second_baseImage = ImageIO.read(new File(FRAME_PATH +FrameId+"."+EXT));
+            }
+            else{
+                if(new Date().getDate()!=1){
+                    second_baseImage = ImageIO.read(new File(FRAME_PATH +FrameId+"-1."+EXT));
+                }
+                else{
+                    second_baseImage = ImageIO.read(new File(FRAME_PATH +FrameId+"-2."+EXT));
+                }
+            }
 
-            BufferedImage img = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
-            Graphics2D g2d = getG2D(img);
-            g2d.setFont(font);
-            FontMetrics fm = g2d.getFontMetrics();
-            g2d.setColor(TEXT_COLOR[FrameId-1]);
-            g2d.drawString(current, 0, fm.getAscent());
+
+            frame.drawImage(second_baseImage,0,0,null);
+            if(FrameId!=4){
+                String current = generateCurrentDate();
+                // Font.PLAIN 부분 {Font. PLAIN,Font. BOLD,Font. ITALIC} 중 선택 가능
+                Font font = new Font(FONTNAME, Font.PLAIN,FONT_SIZE_AT_FRAME[FrameId-1]);
+                Rectangle r = getFontrect(current, font);
+
+                int width = (int) r.getWidth();
+                int height = (int) r.getHeight();
+
+                BufferedImage img = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+                Graphics2D g2d = getG2D(img);
+                g2d.setFont(font);
+                FontMetrics fm = g2d.getFontMetrics();
+                g2d.setColor(TEXT_COLOR[FrameId-1]);
+                g2d.drawString(current, 0, fm.getAscent());
 
 
-            frame.drawImage(img,TEXT_OFFSET[FrameId-1][0],TEXT_OFFSET[FrameId-1][1],null);
-            g2d.dispose();
+                frame.drawImage(img,TEXT_OFFSET[FrameId-1][0],TEXT_OFFSET[FrameId-1][1],null);
+                g2d.dispose();
+            }
+
 
 
 
@@ -291,7 +309,7 @@ public class SelectFrameService {
                 // 파일명에 필요한 index값 증가
                 index++;
             } catch (IOException e) {
-                throw new IllegalArgumentException("Failed to upload file.");
+                throw new IllegalArgumentException("Failed to upload file."+e.toString());
             }
         }
         return FileNames;

@@ -33,13 +33,13 @@ import java.util.List;
  */
 
 @RestController
-@CrossOrigin(origins = {"http://localhost:3000", "http://localhost:8080"})
+@CrossOrigin(origins = "${server.cross-origin-url}")
 @RequestMapping("/api")
 @PropertySource("classpath:application.yml") //application.yml에 들어있는 데이터 사용, Service에서는 사용 못하기 때문에 넘겨줘야함
 public class SelectFrameRestController {
     @Value("${file.upload-dir}")
     String STATIC_DIR;
-    String UPLOAD_PATH, OUTPUT_PATH, FRAME_PATH;
+    String UPLOAD_PATH, OUTPUT_PATH, FRAME_PATH,SELECTED_PATH;
 
 
     // 프로그램이 실행되면 변수 초기화
@@ -103,7 +103,7 @@ public class SelectFrameRestController {
      * @throws IllegalArgumentException
      * @throws IOException
      */
-    @CrossOrigin(origins = "http://localhost:3000")
+    @CrossOrigin(origins = "https://stack4cut.online")
     @Tag(name="Image Upload API",description = "찍은 이미지 업로드, GroupID값, FrameID 받아옴, 이미지 경로 리스트, 최종 이미지 경로, 그룹ID 반환")
     @PostMapping("/upload")
     public ResponseEntity<SelectFrameResponseData> uploadFile(@ModelAttribute SelectFrameRequestDTO requestDto) throws IllegalArgumentException,IOException {

@@ -32,10 +32,14 @@ public class FileAccessRestController {
         OUTPUT_PATH = STATIC_DIR + "/final-photo/";
         FRAME_PATH = STATIC_DIR + "/frames/";
     }
-    @CrossOrigin("*")
+    @CrossOrigin(origins = "${server.cross-origin-url}")
     @GetMapping("/file")
     public ResponseEntity<Resource> getFile(@RequestParam String date, @RequestParam String groupid, @RequestParam String index) throws IOException {
         // group_test_20241101_010321_0.jpg
+        System.out.println(date);
+        System.out.println(groupid);
+        System.out.println(index);
+        System.out.println();
         try{
             FileAccessService fileAccessService = new FileAccessService();
             return fileAccessService.read_File(groupid,date,index,UPLOAD_PATH,false);
@@ -44,7 +48,7 @@ public class FileAccessRestController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
-    @CrossOrigin("*")
+    @CrossOrigin(origins = "${server.cross-origin-url}")
     // 사용자가 접근 할 수 있어야 하는 경로이므로 Cross Origin 적용 x
     @GetMapping("/final_file")
     public ResponseEntity<Resource> getFinalFile(@RequestParam String date, @RequestParam String groupid) throws IOException {

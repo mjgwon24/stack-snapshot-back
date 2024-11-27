@@ -1,5 +1,6 @@
 package stackup.stack_snapshot_back.service;
 
+import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -11,11 +12,9 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
- * 사진 관리 API를 처리하는 서비스
+ * 사진 관리 API를 처리하는 컨트롤러
  * @since 2024.10.17
  * author 임석진
  */
@@ -23,82 +22,43 @@ import org.slf4j.LoggerFactory;
 @Service
 public class PicturePageService {
 
-    private static final Logger logger = LoggerFactory.getLogger(PicturePageService.class);
-    private static final String ORIGINAL_DIR = "original-photo"; // 하위 디렉토리 이름 변경
-
     @Value("${file.upload-dir}")
     private String uploadDirectory;
+    @PostConstruct
+    public void initPaths() {
+        uploadDirectory = uploadDirectory + "/original-photo/";
+    }
 
     private final FileNameGenerator fileNameGenerator = new FileNameGenerator();
 
-    /**
-     * 파일 업로드 메서드
-     * @param file 업로드할 파일
-     * @param photoNumber 사진 번호
-     * @return 저장된 파일명
-     * @throws IOException 파일 저장 실패 시 예외
-     */
-    public String uploadFile(MultipartFile file, int photoNumber) throws IOException {
-
-        Path originalDirectoryPath = Paths.get(uploadDirectory, ORIGINAL_DIR);
-        File originalDirectory = originalDirectoryPath.toFile();
-
-
-        if (!originalDirectory.exists()) {
-            boolean dirsCreated = originalDirectory.mkdirs();
-            if (dirsCreated) {
-                logger.info("Created upload directory: {}", originalDirectoryPath);
-            } else {
-                logger.error("Failed to create upload directory: {}", originalDirectoryPath);
-                throw new IOException("Failed to create upload directory: " + originalDirectoryPath);
-            }
+    public String uploadFile(MultipartFile file, int photoNumber,String groupId) throws IOException {
+        File directory = new File(uploadDirectory);
+        if (!directory.exists() && !directory.mkdirs()) {
+            throw new IOException("Failed to create upload directory: " + uploadDirectory);
         }
 
-        String groupId = "1";
-        String originalFilename = file.getOriginalFilename();
-        if (originalFilename == null) {
-            throw new IOException("Original filename is null");
-        }
-        String fileName = fileNameGenerator.generateOriginalFileName(groupId, photoNumber, originalFilename);
-        Path filePath = originalDirectoryPath.resolve(fileName);
 
+        String fileName = fileNameGenerator.generateOriginalFileName(groupId, photoNumber, file.getOriginalFilename());
+        Path filePath = Paths.get(uploadDirectory, fileName);
 
-        try {
-            file.transferTo(filePath.toFile());
-            logger.info("File saved: {}", filePath);
-        } catch (IOException e) {
-            logger.error("Failed to save file: {}", filePath, e);
-            throw e;
-        }
-
+        // 파일 저장
+        file.transferTo(filePath.toFile());
         return fileName;
     }
 
-    /**
-     * 업로드된 사진 목록 조회 메서드
-     * @return 파일 URL 목록
-     */
     public List<String> getUploadedPhotos() {
         List<String> fileUrls = new ArrayList<>();
-        Path originalDirectoryPath = Paths.get(uploadDirectory, ORIGINAL_DIR);
-        File originalDirectory = originalDirectoryPath.toFile();
-
-        if (!originalDirectory.exists()) {
-            logger.warn("Upload directory does not exist: {}", originalDirectoryPath);
-            return fileUrls;
-        }
-
-        File[] files = originalDirectory.listFiles((dir, name) -> name.toLowerCase().endsWith(".png"));
+        File directory = new File(uploadDirectory);
+        File[] files = directory.listFiles((dir, name) -> name.toLowerCase().endsWith(".png"));
 
         if (files != null) {
             for (File file : files) {
-                String fileUrl = "/stack-photo/" + ORIGINAL_DIR + "/" + file.getName();
+                String fileUrl = "/stack-photo/" + file.getName();
                 fileUrls.add(fileUrl);
             }
-        } else {
-            logger.warn("No files found in directory: {}", originalDirectoryPath);
         }
 
         return fileUrls;
     }
 }
+

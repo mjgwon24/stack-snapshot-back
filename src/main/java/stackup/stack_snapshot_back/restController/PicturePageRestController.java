@@ -25,7 +25,7 @@ import java.util.ArrayList;
 
 @RestController
 @RequestMapping("/api")
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(origins = "${server.cross-origin-url}")
 public class PicturePageRestController {
 
     private final PicturePageService picturePageService;
@@ -47,8 +47,8 @@ public class PicturePageRestController {
                 MultipartFile image = images.get(i);
 
 
-                String fileName = picturePageService.uploadFile(image, i + 1);
-                String fileUrl = "/stack-photo/" + fileName;
+                String fileName = picturePageService.uploadFile(image, i + 1,"1");
+                String fileUrl = "/original-photo/" + fileName;
                 fileUrls.add(fileUrl);
 
             }

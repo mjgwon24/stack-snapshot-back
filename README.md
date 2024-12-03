@@ -8,7 +8,7 @@
 ---
 
 ## 🧑‍💻 기여자
-[![Contributors](https://img.shields.io/badge/contributors-4-brightgreen)](#-기여자-contributors)  
+[![Contributors](https://img.shields.io/badge/contributors-5-brightgreen)](#-기여자-contributors)  
 
 | 이름         | Github 프로필            | 역할                              | 사용 언어 |
 |--------------|--------------------------|-----------------------------------|-------------|

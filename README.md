@@ -76,47 +76,26 @@
 ## 📑 페이지별 기능
 
 ### 프레임 선택
-
+다양한 프레임 중에서 원하는 디자인을 선택하여 사진에 적용할 수 있습니다.
 <img width="1591" alt="스크린샷 2024-12-03 18 43 20" src="https://github.com/user-attachments/assets/bfe759ba-07e4-47cd-9212-f4bcdc91dfc0">
 
-
-- 다양한 프레임 중에서 원하는 디자인을 선택하여 사진에 적용할 수 있습니다.
-
 ### 사진 촬영
-![기능 사진 삽입 예정]
-
-- **설명**: 사용자는 카메라를 통해 실시간으로 사진을 촬영할 수 있습니다.
+사용자는 카메라를 통해 실시간으로 사진을 촬영할 수 있습니다.
+![IMG_BE91E9B7763A-1](https://github.com/user-attachments/assets/d27fda89-d2b5-4797-a174-75f69d2fc592)
 
 ### 사진 선택
-![기능 사진 삽입 예정]
-
-- **설명**: 사용자가 원하는 사진을 선택하고 편집할 수 있습니다.
+사용자가 원하는 사진을 선택하고 편집할 수 있습니다.
+<img width="1015" alt="스크린샷 2024-12-03 19 23 21" src="https://github.com/user-attachments/assets/f48ed16e-5369-4fe8-8db6-8349e64ccd8f">
 
 ### QR 코드 다운로드
-![기능 사진 삽입 예정]
-
-- **설명**: QR 코드를 생성하여 사진 다운로드 링크를 제공합니다.
+QR 코드를 생성하여 사진 다운로드 링크를 제공합니다.
+<img width="931" alt="스크린샷 2024-12-03 19 25 06" src="https://github.com/user-attachments/assets/5ee50394-9f66-4300-93eb-a6bd961c0b49">
+<img width="961" alt="스크린샷 2024-12-03 19 26 33" src="https://github.com/user-attachments/assets/d130d986-ee14-4946-abb2-14c93e87f8ba">
 
 ### 경품 뽑기
-![기능 사진 삽입 예정]
-
-- **설명**: 이벤트 경품 뽑기 페이지를 통해 경품을 뽑을 수 있습니다.
-
----
-
-## 📂 프로젝트 구조
-
-```plaintext
-src/
-├── main/java/stackup/stack_snapshot_back/
-│   ├── config/              # 프로젝트 설정 관련 파일
-│   ├── controller/          # API 엔드포인트 컨트롤러
-│   ├── restController/      # RESTful API 엔드포인트 정의
-│   ├── service/             # 비즈니스 로직 처리
-│   ├── util/                # 유틸리티 클래스
-│   └── StackSnapshotBackApplication.java  # 애플리케이션 진입점
-└── test/java/stackup/stack_snapshot_back/  # 테스트 코드
-```
+이벤트 경품 뽑기 페이지를 통해 경품을 뽑을 수 있습니다.
+<img width="823" alt="스크린샷 2024-12-03 19 28 14" src="https://github.com/user-attachments/assets/b6ae2e7f-ed93-41eb-aab0-6463a1c2934b">
+<img width="826" alt="스크린샷 2024-12-03 19 28 39" src="https://github.com/user-attachments/assets/5b25d942-d2db-4f52-9751-526b3767a1ae">
 
 ---
 

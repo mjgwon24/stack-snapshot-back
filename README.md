@@ -12,12 +12,12 @@
 
 | 이름         | Github 프로필            | 역할                              | 사용 언어 |
 |--------------|--------------------------|-----------------------------------|-------------|
-| **권민지** | [mjgwon24](https://github.com/mjgwon24) | PM & frontend & backend           | Java |
-| **김이현** | [lh7721004](https://github.com/lh7721004) | frontend & backend        | Java |
-| **임석진** | [seokjin925](https://github.com/seokjin925) | frontend & backend                 | Java |
+| **권민지** | [mjgwon24](https://github.com/mjgwon24) | PM & frontend & backend           | Java, JavaScript, React |
+| **김이현** | [lh7721004](https://github.com/lh7721004) | frontend & backend        | Java, JavaScript, React |
+| **임석진** | [seokjin925](https://github.com/seokjin925) | frontend & backend                 | Java, JavaScript, React |
 | **이수헌** | [suheon927](https://github.com/suheon927) | backend                 | Java |
-| **김현나** | [suheon927](https://github.com/nanaring1) | frontend                | JavaScript, React |
-| **구세영** | [suheon927](https://github.com/wybh930) | frontend               | JavaScript, React |
+| **김현나** | [nanaring1](https://github.com/nanaring1) | frontend                | JavaScript, React |
+| **구세영** | [wybh930](https://github.com/wybh930) | frontend               | JavaScript, React |
 
 ---
 

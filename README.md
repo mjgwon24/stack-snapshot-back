@@ -16,6 +16,8 @@
 | **김이현** | [lh7721004](https://github.com/lh7721004) | frontend & backend        | Java |
 | **임석진** | [seokjin925](https://github.com/seokjin925) | frontend & backend                 | Java |
 | **이수헌** | [suheon927](https://github.com/suheon927) | backend                 | Java |
+| **김현나** | [suheon927](https://github.com/nanaring1) | frontend                | JavaScript, React |
+| **구세영** | [suheon927](https://github.com/wybh930) | frontend               | JavaScript, React |
 
 ---
 

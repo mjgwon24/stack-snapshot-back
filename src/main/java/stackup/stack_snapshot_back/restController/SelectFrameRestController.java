@@ -26,21 +26,19 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 완성 사진 생성 서비스
+ * 완성 사진 생성 API 처리 컨트롤러
  * 4개의 이미지를 받아 하나의 이미지로 합쳐주는 서비스
- * @since 2024-10-22
+ * @since 2024.10.22
  * @author 김이현
  */
-
 @RestController
 @CrossOrigin(origins = "${server.cross-origin-url}")
 @RequestMapping("/api")
-@PropertySource("classpath:application.yml") //application.yml에 들어있는 데이터 사용, Service에서는 사용 못하기 때문에 넘겨줘야함
+@PropertySource("classpath:application.yml")
 public class SelectFrameRestController {
     @Value("${file.upload-dir}")
     String STATIC_DIR;
     String UPLOAD_PATH, OUTPUT_PATH, FRAME_PATH,SELECTED_PATH;
-
 
     // 프로그램이 실행되면 변수 초기화
     @PostConstruct
@@ -49,6 +47,7 @@ public class SelectFrameRestController {
         OUTPUT_PATH = STATIC_DIR + "/final-photo/";
         FRAME_PATH = STATIC_DIR + "/frames/";
     }
+
     /**
      * DTO
      */
@@ -67,8 +66,6 @@ public class SelectFrameRestController {
             this.file = file;
         }
     }
-
-
 
     //JSON 객체를 반환하기 위한 클래스
     @Data
@@ -91,18 +88,7 @@ public class SelectFrameRestController {
         return dateTime.toEpochSecond(ZoneOffset.UTC);
     }
 
-
-    /*
-     * API
-     */
-
-    /**
-     *
-     * @param requestDto
-     * @return
-     * @throws IllegalArgumentException
-     * @throws IOException
-     */
+    // 이미지 업로드 API
     @CrossOrigin(origins = "https://stack4cut.online")
     @Tag(name="Image Upload API",description = "찍은 이미지 업로드, GroupID값, FrameID 받아옴, 이미지 경로 리스트, 최종 이미지 경로, 그룹ID 반환")
     @PostMapping("/upload")
@@ -137,8 +123,5 @@ public class SelectFrameRestController {
 
         return new ResponseEntity<>(Response, HttpStatus.OK);
     }
-
-
-
 }
 

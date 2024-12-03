@@ -15,6 +15,11 @@ import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 
+/**
+ * 파일 접근 서비스
+ * @since 2024.11.03
+ * @author 김이현
+ */
 public class FileAccessService {
     final long EXPIRE = 300;//만료 기간 초 단위
     // 기한 지난 파일 삭제시 필요한 메소드
@@ -30,6 +35,7 @@ public class FileAccessService {
 
         return dateTime.toEpochSecond(ZoneOffset.UTC);
     }
+
     private ResponseEntity<Resource> make_response(File file) throws IOException {
         Resource resource = new FileSystemResource(file);
 
@@ -46,6 +52,7 @@ public class FileAccessService {
                 .contentType(MediaType.parseMediaType(mimeType))
                 .body(resource);
     }
+
     public ResponseEntity<Resource> read_File(String groupid,String date,String index,String OUTPUT_PATH,Boolean isFinal) throws IOException {
         String result_filename = OUTPUT_PATH;
         if(isFinal) {
@@ -68,7 +75,6 @@ public class FileAccessService {
 //            file.delete();
 //            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 //        }
-
 
         // 파일을 Resource로 변환
         return make_response(file);

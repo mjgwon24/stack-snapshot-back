@@ -23,6 +23,11 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * QR 코드 생성 서비스
+ * @since 2024.10.27
+ * @author 이수헌
+ */
 @Service
 public class CreateQrService {
 

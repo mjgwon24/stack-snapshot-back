@@ -15,15 +15,19 @@ import stackup.stack_snapshot_back.service.FileAccessService;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+
+/**
+ * 파일 접근 API 처리 컨트롤러
+ * @since 2024.11.03
+ * @author 김이현
+ */
 @RestController
 @RequestMapping("/api")
-@PropertySource("classpath:application.yml") //application.yml에 들어있는 데이터 사용, Service에서는 사용 못하기 때문에 넘겨줘야함
+@PropertySource("classpath:application.yml")
 public class FileAccessRestController {
     @Value("${file.upload-dir}")
     String STATIC_DIR;
     String UPLOAD_PATH, OUTPUT_PATH, FRAME_PATH;
-
-
 
     // 프로그램이 실행되면 변수 초기화
     @PostConstruct
@@ -32,6 +36,7 @@ public class FileAccessRestController {
         OUTPUT_PATH = STATIC_DIR + "/final-photo/";
         FRAME_PATH = STATIC_DIR + "/frames/";
     }
+
     @CrossOrigin(origins = "${server.cross-origin-url}")
     @GetMapping("/file")
     public ResponseEntity<Resource> getFile(@RequestParam String date, @RequestParam String groupid, @RequestParam String index) throws IOException {
@@ -48,8 +53,8 @@ public class FileAccessRestController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
+
     @CrossOrigin(origins = "${server.cross-origin-url}")
-    // 사용자가 접근 할 수 있어야 하는 경로이므로 Cross Origin 적용 x
     @GetMapping("/final_file")
     public ResponseEntity<Resource> getFinalFile(@RequestParam String date, @RequestParam String groupid) throws IOException {
         // 파일 경로 설정 (프로젝트 외부의 파일 경로)
@@ -62,6 +67,5 @@ public class FileAccessRestController {
         catch (Exception e){
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-
     }
 }

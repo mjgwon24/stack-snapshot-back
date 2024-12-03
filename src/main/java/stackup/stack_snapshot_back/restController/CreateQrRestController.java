@@ -12,6 +12,11 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
+/**
+ * QR 코드 생성 및 사진 다운로드 API 처리 컨트롤러
+ * @since 2024.10.27
+ * @author 이수헌
+ */
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api")

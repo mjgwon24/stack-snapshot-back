@@ -77,9 +77,10 @@
 
 ### 프레임 선택
 
-<img width="1680" alt="스크린샷 2024-12-03 18 32 50" src="https://github.com/user-attachments/assets/85c9e6d0-2588-4d36-a5ce-b1a28c2615b1">
+<img width="1591" alt="스크린샷 2024-12-03 18 43 20" src="https://github.com/user-attachments/assets/bfe759ba-07e4-47cd-9212-f4bcdc91dfc0">
 
-- **설명**: 다양한 프레임 중에서 원하는 디자인을 선택하여 사진에 적용할 수 있습니다.
+
+- 다양한 프레임 중에서 원하는 디자인을 선택하여 사진에 적용할 수 있습니다.
 
 ### 사진 촬영
 ![기능 사진 삽입 예정]

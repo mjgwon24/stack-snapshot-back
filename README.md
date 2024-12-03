@@ -1,7 +1,7 @@
 
 # 🧑‍💻 Stack Snapshot (Backend) - 사진 추억 남기기 서비스
 
-![시작 화면 삽입 예정](https://ifh.cc/g/t7HRF1.jpg)
+<img width="1725" alt="스크린샷 2024-12-03 18 06 21" src="https://github.com/user-attachments/assets/c65b1d28-420b-4349-8791-9afb76e213e5">
 
 [![Contributors](https://img.shields.io/badge/contributors-4-brightgreen)](#-기여자-contributors)  
 

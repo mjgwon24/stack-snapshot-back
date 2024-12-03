@@ -16,7 +16,7 @@ import java.util.List;
 /**
  * 사진 관리 API를 처리하는 컨트롤러
  * @since 2024.10.17
- * author 임석진
+ * @author 임석진
  */
 
 @Service

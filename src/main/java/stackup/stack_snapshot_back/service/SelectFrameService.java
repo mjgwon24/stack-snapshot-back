@@ -23,7 +23,7 @@ import stackup.stack_snapshot_back.util.FileNameGenerator;
 /**
  * 완성 사진 생성 서비스
  * 4개의 이미지를 받아 하나의 이미지로 합쳐주는 서비스
- * @since 2024-10-22
+ * @since 2024.10.22
  * @author 김이현
  */
 @Service
@@ -47,6 +47,7 @@ public class SelectFrameService {
             {272,328},//frame3 272x328
             {340,272}//frame4 340x273
     };
+
     // 프레임별 텍스트 색
     final Color[] TEXT_COLOR = {
             new Color(235,235,235),//frame1 EBEBEB 235 235 235
@@ -54,6 +55,7 @@ public class SelectFrameService {
             new Color(191, 170, 15),//frame3 BFAA0F 191 170 15
             new Color(255, 255, 255),//frame4
     };
+
     // 프레임별 텍스트 오프셋
     final int[][] TEXT_OFFSET = {
             {
@@ -69,6 +71,7 @@ public class SelectFrameService {
                     0,0
             }//frame4
     };
+
     // 프레임별 이미지 오프셋
     final int[][][] OFFSET = {
             {
@@ -237,9 +240,6 @@ public class SelectFrameService {
                 frame.drawImage(img,TEXT_OFFSET[FrameId-1][0],TEXT_OFFSET[FrameId-1][1],null);
                 g2d.dispose();
             }
-
-
-
 
             //프레임 위에 사진 이미지 작성 종료 후 닫기
             frame.dispose();

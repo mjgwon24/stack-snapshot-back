@@ -3,13 +3,12 @@
 
 <img width="1725" alt="스크린샷 2024-12-03 18 06 21" src="https://github.com/user-attachments/assets/c65b1d28-420b-4349-8791-9afb76e213e5">
 
-[![Contributors](https://img.shields.io/badge/contributors-4-brightgreen)](#-기여자-contributors)  
-
-**Stack Snapshot**은 '인생네컷'과 유사한 기능을 제공하는 사진 추억 남기기 서비스로, **경북 2024 해커톤**에서 참가자들의 소중한 추억을 기록해주는 프로젝트입니다. 사용자는 다양한 프레임을 적용해 사진을 찍고, 소중한 추억을 남길 수 있습니다. 이 프로젝트의 백엔드는 **Spring Boot**와 **JPA**를 기반으로 이루어져있습니다.
+**Stack Snapshot**은 '인생네컷'과 유사한 기능을 제공하는 사진 추억 남기기 서비스로, **경북 2024 해커톤**에서 참가자들의 소중한 추억을 기록해주는 프로젝트입니다. 사용자는 다양한 프레임을 적용해 사진을 찍고, 소중한 추억을 남길 수 있습니다.
 
 ---
 
 ## 🧑‍💻 기여자
+[![Contributors](https://img.shields.io/badge/contributors-4-brightgreen)](#-기여자-contributors)  
 
 | 이름         | Github 프로필            | 역할                              | 사용 언어 |
 |--------------|--------------------------|-----------------------------------|-------------|
@@ -22,14 +21,11 @@
 
 ## 🛠️ 개발 환경
 
-### 버전 및 이슈 관리
-  ![GitHub](https://img.shields.io/badge/GitHub-181717?style=flat&logo=github&logoColor=white)  ![GitHub Issues](https://img.shields.io/badge/Issues-FE5000?style=flat&logo=github&logoColor=white)  ![GitHub Projects](https://img.shields.io/badge/Projects-0366D6?style=flat&logo=github&logoColor=white)
-
 ### 협업 툴
-  ![Discord](https://img.shields.io/badge/Discord-5865F2?style=flat&logo=discord&logoColor=white)   ![Notion](https://img.shields.io/badge/Notion-000000?style=flat&logo=notion&logoColor=white)
+   ![GitHub](https://img.shields.io/badge/GitHub-181717?style=flat&logo=github&logoColor=white)  ![Discord](https://img.shields.io/badge/Discord-5865F2?style=flat&logo=discord&logoColor=white)   ![Notion](https://img.shields.io/badge/Notion-000000?style=flat&logo=notion&logoColor=white)
 
 ### 서비스 배포 환경
-  ![Netlify](https://img.shields.io/badge/Netlify-00C7B7?style=flat&logo=netlify&logoColor=white)
+  ![Ubuntu](https://img.shields.io/badge/Ubuntu-E95420?style=for-the-badge&logo=ubuntu&logoColor=white) ![Nginx](https://img.shields.io/badge/nginx-%23009639.svg?style=for-the-badge&logo=nginx&logoColor=white)
 
 ---
 
@@ -42,7 +38,7 @@
 ![Spring Boot](https://img.shields.io/badge/Spring%20Boot-6DB33F?style=flat&logo=spring-boot&logoColor=white)  ![Gradle](https://img.shields.io/badge/Gradle-02303A?style=flat&logo=gradle&logoColor=white)  ![Swagger](https://img.shields.io/badge/Swagger-85EA2D?style=flat&logo=swagger&logoColor=black)  ![REST API](https://img.shields.io/badge/REST%20API-005571?style=flat&logo=rest&logoColor=white)
 
 ### Cooperation  
-![GitHub](https://img.shields.io/badge/GitHub-181717?style=flat&logo=github&logoColor=white)  ![GitHub Issues](https://img.shields.io/badge/Issues-FE5000?style=flat&logo=github&logoColor=white)  ![GitHub Projects](https://img.shields.io/badge/Projects-0366D6?style=flat&logo=github&logoColor=white)
+![GitHub](https://img.shields.io/badge/GitHub-181717?style=flat&logo=github&logoColor=white)  ![GitHub Projects](https://img.shields.io/badge/Projects-0366D6?style=flat&logo=github&logoColor=white)
 
 ---
 
@@ -50,14 +46,16 @@
 
 ### 브랜치 전략
 
-우리의 브랜치 전략은 Git Flow를 기반으로 하며, 다음과 같은 브랜치를 사용합니다.
+브랜치 전략은 Git Flow를 기반으로 하며, 다음과 같은 브랜치를 사용합니다.
 
 - **Main Branch**:  
     - 배포 가능한 상태의 코드를 유지합니다.  
     - 모든 배포는 이 브랜치에서 이루어집니다.
+- **Develop Branch**:
+    - 기능 개발을 취합하는 브랜치입니다.
 - **Feature Branches**:  
-    - 기능별로 브랜치를 분기합니다.  
-    - 각 기능 개발은 `feature/{기능명}` 형식의 브랜치에서 이루어지며, 작업 완료 후 Main Branch로 병합됩니다.
+    - 기능별로 분기한 브랜치입니다.
+    - 각 기능 개발은 `feature/{기능명}` 형식의 브랜치에서 이루어지며, 작업 완료 후 Develop Branch로 병합됩니다.
 
 ---
 
@@ -69,17 +67,17 @@
 
 ---
 
-## 📅 개발 기간 및 작업 관리
+## 📅 개발 기간
 
 - **개발 기간**: 2024년 10월 13일 ~ 2024년 11월 20일  
-- **작업 관리**: GitHub Issues 및 GitHub Project를 활용하여 작업을 분담하고 진행 상황을 공유합니다.
 
 ---
 
 ## 📑 페이지별 기능
 
 ### 프레임 선택
-![기능 사진 삽입 예정](https://ifh.cc/g/kADywG.jpg)
+
+<img width="1680" alt="스크린샷 2024-12-03 18 32 50" src="https://github.com/user-attachments/assets/85c9e6d0-2588-4d36-a5ce-b1a28c2615b1">
 
 - **설명**: 다양한 프레임 중에서 원하는 디자인을 선택하여 사진에 적용할 수 있습니다.
 
@@ -97,6 +95,11 @@
 ![기능 사진 삽입 예정]
 
 - **설명**: QR 코드를 생성하여 사진 다운로드 링크를 제공합니다.
+
+### 경품 뽑기
+![기능 사진 삽입 예정]
+
+- **설명**: 이벤트 경품 뽑기 페이지를 통해 경품을 뽑을 수 있습니다.
 
 ---
 

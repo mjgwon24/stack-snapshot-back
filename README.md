@@ -78,7 +78,7 @@
 ### [ 프레임 선택 ]
 다양한 프레임 중에서 원하는 디자인을 선택하여 사진에 적용할 수 있습니다.
 
-<img width="1591" alt="스크린샷 2024-12-03 18 43 20" src="https://github.com/user-attachments/assets/bfe759ba-07e4-47cd-9212-f4bcdc91dfc0">
+<img width="950" alt="스크린샷 2024-12-03 18 43 20" src="https://github.com/user-attachments/assets/bfe759ba-07e4-47cd-9212-f4bcdc91dfc0">
 
 
 ### [ 사진 촬영 ]
@@ -92,23 +92,23 @@
 
 사용자가 원하는 사진을 선택하고 편집할 수 있습니다.
 
-<img width="1015" alt="스크린샷 2024-12-03 19 23 21" src="https://github.com/user-attachments/assets/f48ed16e-5369-4fe8-8db6-8349e64ccd8f">
+<img width="950" alt="스크린샷 2024-12-03 19 23 21" src="https://github.com/user-attachments/assets/f48ed16e-5369-4fe8-8db6-8349e64ccd8f">
 
 
 ### [ QR 코드 다운로드 ]
 
 QR 코드를 생성하여 사진 다운로드 링크를 제공합니다.
 
-<img width="931" alt="스크린샷 2024-12-03 19 25 06" src="https://github.com/user-attachments/assets/5ee50394-9f66-4300-93eb-a6bd961c0b49">
-<img width="961" alt="스크린샷 2024-12-03 19 26 33" src="https://github.com/user-attachments/assets/d130d986-ee14-4946-abb2-14c93e87f8ba">
+<img width="950" alt="스크린샷 2024-12-03 19 25 06" src="https://github.com/user-attachments/assets/5ee50394-9f66-4300-93eb-a6bd961c0b49">
+<img width="950" alt="스크린샷 2024-12-03 19 26 33" src="https://github.com/user-attachments/assets/d130d986-ee14-4946-abb2-14c93e87f8ba">
 
 
 ### [ 경품 뽑기 ]
 
 이벤트 경품 뽑기 페이지를 통해 경품을 뽑을 수 있습니다.
 
-<img width="823" alt="스크린샷 2024-12-03 19 28 14" src="https://github.com/user-attachments/assets/b6ae2e7f-ed93-41eb-aab0-6463a1c2934b">
-<img width="826" alt="스크린샷 2024-12-03 19 28 39" src="https://github.com/user-attachments/assets/5b25d942-d2db-4f52-9751-526b3767a1ae">
+<img width="950" alt="스크린샷 2024-12-03 19 28 14" src="https://github.com/user-attachments/assets/b6ae2e7f-ed93-41eb-aab0-6463a1c2934b">
+<img width="950" alt="스크린샷 2024-12-03 19 28 39" src="https://github.com/user-attachments/assets/5b25d942-d2db-4f52-9751-526b3767a1ae">
 
 
 ---

@@ -5,7 +5,8 @@
 
 **Stack Snapshot**은 '인생네컷'과 유사한 기능을 제공하는 사진 추억 남기기 서비스로, **경북 2024 해커톤**에서 참가자들의 소중한 추억을 기록해주는 프로젝트입니다. 사용자는 다양한 프레임을 적용해 사진을 찍고, 소중한 추억을 남길 수 있습니다.
 
----
+<br/>
+<br/>
 
 ## 🧑‍💻 기여자
 [![Contributors](https://img.shields.io/badge/contributors-5-brightgreen)](#-기여자-contributors)  
@@ -19,7 +20,8 @@
 | **김현나** | [nanaring1](https://github.com/nanaring1) | frontend                | JavaScript, React |
 | **구세영** | [wybh930](https://github.com/wybh930) | frontend               | JavaScript, React |
 
----
+<br/>
+<br/>
 
 ## 🛠️ 개발 환경
 
@@ -29,7 +31,8 @@
 ### 서비스 배포 환경
   ![Ubuntu](https://img.shields.io/badge/Ubuntu-E95420?style=for-the-badge&logo=ubuntu&logoColor=white) ![Nginx](https://img.shields.io/badge/nginx-%23009639.svg?style=for-the-badge&logo=nginx&logoColor=white)
 
----
+<br/>
+<br/>
 
 ## 🔧 기술 스택
 
@@ -42,7 +45,8 @@
 ### Cooperation  
 ![GitHub](https://img.shields.io/badge/GitHub-181717?style=flat&logo=github&logoColor=white)  ![GitHub Projects](https://img.shields.io/badge/Projects-0366D6?style=flat&logo=github&logoColor=white)
 
----
+<br/>
+<br/>
 
 ## 🔄 Development Workflow
 
@@ -59,7 +63,8 @@
     - 기능별로 분기한 브랜치입니다.
     - 각 기능 개발은 `feature/{기능명}` 형식의 브랜치에서 이루어지며, 작업 완료 후 Develop Branch로 병합됩니다.
 
----
+<br/>
+<br/>
 
 ## 🔧 주요 기능
 
@@ -67,13 +72,15 @@
 - **추억 저장:** 최종적으로 생성된 사진을 다운로드할 수 있습니다.
 - **QR 코드 제공:** 사진이 생성된 후, 다운로드를 위한 QR 코드가 제공됩니다.
 
----
+<br/>
+<br/>
 
 ## 📅 개발 기간
 
 - **개발 기간**: 2024년 10월 13일 ~ 2024년 11월 20일  
 
----
+<br/>
+<br/>
 
 ## 📑 페이지별 기능
 
@@ -82,6 +89,7 @@
 
 <img width="950" alt="스크린샷 2024-12-03 18 43 20" src="https://github.com/user-attachments/assets/bfe759ba-07e4-47cd-9212-f4bcdc91dfc0">
 
+<br/>
 
 ### [ 사진 촬영 ]
 
@@ -89,7 +97,7 @@
 
 <img width="950" alt="스크린샷 2024-12-03 18 43 20" src="https://github.com/user-attachments/assets/623f892d-0965-4bb4-a3eb-4ed9b99676e2">
 
-
+<br/>
 
 ### [ 사진 선택 ]
 
@@ -97,7 +105,7 @@
 
 <img width="950" alt="스크린샷 2024-12-03 19 23 21" src="https://github.com/user-attachments/assets/f48ed16e-5369-4fe8-8db6-8349e64ccd8f">
 
-
+<br/>
 ### [ QR 코드 다운로드 ]
 
 QR 코드를 생성하여 사진 다운로드 링크를 제공합니다.
@@ -105,7 +113,7 @@ QR 코드를 생성하여 사진 다운로드 링크를 제공합니다.
 <img width="950" alt="스크린샷 2024-12-03 19 25 06" src="https://github.com/user-attachments/assets/5ee50394-9f66-4300-93eb-a6bd961c0b49">
 <img width="950" alt="스크린샷 2024-12-03 19 26 33" src="https://github.com/user-attachments/assets/d130d986-ee14-4946-abb2-14c93e87f8ba">
 
-
+<br/>
 ### [ 경품 뽑기 ]
 
 이벤트 경품 뽑기 페이지를 통해 경품을 뽑을 수 있습니다.
@@ -114,7 +122,8 @@ QR 코드를 생성하여 사진 다운로드 링크를 제공합니다.
 <img width="950" alt="스크린샷 2024-12-03 19 28 39" src="https://github.com/user-attachments/assets/5b25d942-d2db-4f52-9751-526b3767a1ae">
 
 
----
+<br/>
+<br/>
 
 ## 📬 프로젝트 후기
 

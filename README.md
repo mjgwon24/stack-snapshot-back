@@ -111,8 +111,7 @@
 QR 코드를 생성하여 사진 다운로드 링크를 제공합니다.
 
 <img width="950" alt="스크린샷 2024-12-03 19 25 06" src="https://github.com/user-attachments/assets/5ee50394-9f66-4300-93eb-a6bd961c0b49">
-<img width="950" alt="스크린샷 2024-12-03 19 26 33" src="https://github.com/user-attachments/assets/d130d986-ee14-4946-abb2-14c93e87f8ba">
-
+<img width="950" alt="스크린샷 2024-12-03 19 26 33" src="https://github.com/user-attachments/assets/8c373a49-7bab-4bd6-9e1e-58ac78b8021f">
 <br/>
 ### [ 경품 뽑기 ]
 

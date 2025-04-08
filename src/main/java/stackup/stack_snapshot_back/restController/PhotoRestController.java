@@ -23,18 +23,16 @@ import java.util.List;
  */
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api")
+@RequestMapping("/api/photos")
 @CrossOrigin(origins = "${server.cross-origin-url}")
 @PropertySource("classpath:application.yml")
+@Tag(name = "Photo API", description = "사진 처리 API")
 public class PhotoRestController {
 
-    private final PhotoService photoService;
     @Value("${file.upload-dir}")
     private String uploadDirectory;
 
-    @Value("${server.cross-origin-url}")
-    private String crossOriginUrl;
-
+    private final PhotoService photoService;
     String UPLOAD_PATH, OUTPUT_PATH, FRAME_PATH;
 
     @PostConstruct
@@ -45,11 +43,11 @@ public class PhotoRestController {
     }
 
     /**
-     * 원본 사진 업로드 API
-     * @param images 업로드할 사진 리스트
-     * @return 업로드된 사진 URL 리스트
+     * 사진 업로드 API
+     * @param images 업로드 할 사진 리스트
+     * @return 업로드 된 사진 URL 리스트
      */
-    @PostMapping("/origin-upload")
+    @PostMapping
     public ResponseEntity<List<String>> uploadPhotos(@RequestParam("images") List<MultipartFile> images) {
         try {
             List<String> fileUrls = photoService.uploadPhotos(images);
@@ -60,11 +58,11 @@ public class PhotoRestController {
     }
 
     /**
-     * 업로드된 전체 사진 리스트 조회 API
-     * @return 업로드된 전체 사진 URL 리스트
+     * 업로드 사진 목록 조회 API
+     * @return 업로드 된 사진 URL 리스트
      */
-    @GetMapping("/photos")
-    public ResponseEntity<List<String>> getUploadedPhotos() {
+    @GetMapping
+    public ResponseEntity<List<String>> getAllPhotos() {
         List<String> fileUrls = photoService.getUploadedPhotos();
         if (fileUrls.isEmpty()) {
             return ResponseEntity.notFound().build();
@@ -73,12 +71,12 @@ public class PhotoRestController {
     }
 
     /**
-     * 업로드된 사진 다운로드 API
-     * @param fileName 다운로드할 사진 파일 이름
-     * @return 다운로드할 사진 파일 리소스
+     * 개별 사진 다운로드 API
+     * @param fileName 다운로드 할 사진 파일 이름
+     * @return 사진 파일 리소스
      */
-    @GetMapping("/files/{fileName:.+}")
-    public ResponseEntity<Resource> serveFile(@PathVariable String fileName) {
+    @GetMapping("/{fileName:.+}")
+    public ResponseEntity<Resource> downloadPhoto(@PathVariable String fileName) {
         try {
             return photoService.serveFile(fileName);
         } catch (IOException e) {
@@ -87,49 +85,45 @@ public class PhotoRestController {
     }
 
     /**
-     * 최종 합성 이미지 업로드 API
-     * @param requestDto
-     * @return
+     * 프레임 선택 및 사진 업로드 API
+     * @param requestDto 업로드 요청 데이터 (selectedFrameID, groupID, List file)
+     * @return groupId, outputPath
      * @throws IllegalArgumentException
      * @throws IOException
      */
-    @CrossOrigin(origins = "${server.cross-origin-url}")
-    @Tag(name = "Image Upload API", description = "찍은 이미지 업로드, GroupID값, FrameID 받아옴, 이미지 경로 리스트, 최종 이미지 경로, 그룹ID 반환")
-    @PostMapping("/upload")
-    public ResponseEntity<SelectFrameResponseData> uploadFile(@ModelAttribute SelectFrameRequestDTO requestDto) throws IllegalArgumentException, IOException {
+    @PostMapping("/frames")
+    public ResponseEntity<SelectFrameResponseData> uploadWithFrame(@ModelAttribute SelectFrameRequestDTO requestDto) throws IllegalArgumentException, IOException {
         SelectFrameResponseData response = photoService.uploadFile(requestDto, UPLOAD_PATH, FRAME_PATH, OUTPUT_PATH);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     /**
-     * 원본 사진 조회 API
+     * 특정 날짜 및 그룹 사진 조회 API
      * @param date 촬영 날짜
-     * @param groupid 그룹 ID
+     * @param groupId 그룹 ID
      * @return 사진 파일 리소스
-     * @throws IOException 입출력 예외
+     * @throws IOException
      */
-    @CrossOrigin(origins = "${server.cross-origin-url}")
-    @GetMapping("/file")
-    public ResponseEntity<Resource> getFile(@RequestParam String groupid, @RequestParam String date, @RequestParam String index) throws IOException {
+    @GetMapping("/groups/{groupId}/dates/{date}/photos/{index}")
+    public ResponseEntity<Resource> getPhotoByGroupAndDate(@PathVariable("groupId") String groupId, @PathVariable("date") String date, @PathVariable("index") String index) throws IOException {
         try {
-            return photoService.getFile(groupid, date, index, UPLOAD_PATH);
+            return photoService.getFile(groupId, date, index, UPLOAD_PATH);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
 
     /**
-     * 최종 합성 이미지 조회 API
-     * @param date
-     * @param groupid
-     * @return
+     * 특정 날짜 및 그룹의 최종 합성 이미지 조회 API
+     * @param groupId 그룹 ID
+     * @param date 촬영 날짜
+     * @return 최종 합성 이미지 파일 리소스
      * @throws IOException
      */
-    @CrossOrigin(origins = "${server.cross-origin-url}")
-    @GetMapping("/final_file")
-    public ResponseEntity<Resource> getFinalFile(@RequestParam String date, @RequestParam String groupid) throws IOException {
+    @GetMapping("/groups/{groupId}/dates/{date}/final")
+    public ResponseEntity<Resource> getFinalPhoto(@PathVariable("groupId") String groupId, @PathVariable("date") String date) throws IOException {
         try {
-            return photoService.getFinalFile(date, groupid, OUTPUT_PATH);
+            return photoService.getFinalFile(date, groupId, OUTPUT_PATH);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }

@@ -10,8 +10,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import stackup.stack_snapshot_back.dto.SelectFrameRequestDTO;
-import stackup.stack_snapshot_back.dto.SelectFrameResponseData;
+import stackup.stack_snapshot_back.dto.SelectFrameRequestDto;
+import stackup.stack_snapshot_back.dto.SelectFrameResponseDto;
 import stackup.stack_snapshot_back.service.PhotoService;
 
 import java.io.IOException;
@@ -92,8 +92,8 @@ public class PhotoRestController {
      * @throws IOException
      */
     @PostMapping("/frames")
-    public ResponseEntity<SelectFrameResponseData> uploadWithFrame(@ModelAttribute SelectFrameRequestDTO requestDto) throws IllegalArgumentException, IOException {
-        SelectFrameResponseData response = photoService.uploadFile(requestDto, UPLOAD_PATH, FRAME_PATH, OUTPUT_PATH);
+    public ResponseEntity<SelectFrameResponseDto> uploadWithFrame(@ModelAttribute SelectFrameRequestDto requestDto) throws IllegalArgumentException, IOException {
+        SelectFrameResponseDto response = photoService.uploadFile(requestDto, UPLOAD_PATH, FRAME_PATH, OUTPUT_PATH);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 

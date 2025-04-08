@@ -1,11 +1,14 @@
 package stackup.stack_snapshot_back.util;
 
+import org.springframework.stereotype.Service;
+
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
  * 파일명 생성기
  */
+@Service
 public class FileNameGenerator {
 
     /**

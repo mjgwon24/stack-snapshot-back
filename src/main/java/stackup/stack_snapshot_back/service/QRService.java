@@ -24,24 +24,22 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * QR 코드 생성 서비스
+ * QR 코드 생성 및 사진 다운로드 서비스
  * @since 2024.10.27
- * @author 이수헌
  */
 @Service
-public class CreateQrService {
+public class QRService {
 
     @Value("${file.upload-dir}")
     private String STATIC_DIR;
 
-    private String qrCodeImagePath;
-
     @Value("${server.url}")
     private String serverUrl;
 
+    private String qrCodeImagePath;
+
     private final FileNameGenerator fileNameGenerator = new FileNameGenerator();
 
-    // 프로그램이 실행되면 변수 초기화
     @PostConstruct
     public void initPaths() {
         qrCodeImagePath = STATIC_DIR + "/final-photo/";
@@ -71,23 +69,18 @@ public class CreateQrService {
 
     /**
      * QR 코드 생성
-     * @param groupId QR 코드 생성 요청 데이터 (그룹 ID 포함)
+     * @param groupId 그룹 ID
+     * @param date 날짜
      * @return QR 코드 이미지 데이터 (byte[])
-     * @throws WriterException QR 코드 생성 시 예외
-     * @throws IOException 파일 저장 시 예외
      */
-    public byte[] generateQrCode(String groupId,String date) {
+    public byte[] generateQrCode(String groupId, String date) {
         try {
-            System.out.println("Starting QR code generation for groupId: " + groupId);
-            System.out.println("Starting QR code generation for date: " + date);
             String latestFileName = getLatestFileName(groupId);
             if (latestFileName == null) {
                 throw new RuntimeException("파일 이름이 null입니다. groupId: " + groupId);
             }
-            System.out.println("Latest file name obtained: " + latestFileName);
 
-            String downloadUrl = serverUrl + "/api/download-photo?groupId=" + groupId + "&fileName=" + latestFileName;
-            System.out.println("Download URL generated: " + downloadUrl);
+            String downloadUrl = serverUrl + "/api/qrs/" + groupId + "/photos/" + latestFileName;
 
             Map<EncodeHintType, Object> hints = new HashMap<>();
             hints.put(EncodeHintType.ERROR_CORRECTION, ErrorCorrectionLevel.H);
@@ -95,28 +88,16 @@ public class CreateQrService {
             hints.put(EncodeHintType.MARGIN, 0);
 
             QRCodeWriter qrCodeWriter = new QRCodeWriter();
-            BitMatrix bitMatrix = qrCodeWriter.encode(downloadUrl, BarcodeFormat.QR_CODE, 350, 350,hints);
-
-//            QRCodeWriter qrCodeWriter = new QRCodeWriter();
-//            BitMatrix bitMatrix = qrCodeWriter.encode(downloadUrl, BarcodeFormat.QR_CODE, 350, 350);
-            System.out.println("QR code matrix created successfully.");
+            BitMatrix bitMatrix = qrCodeWriter.encode(downloadUrl, BarcodeFormat.QR_CODE, 350, 350, hints);
 
             BufferedImage bufferedImage = MatrixToImageWriter.toBufferedImage(bitMatrix);
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             ImageIO.write(bufferedImage, "png", baos);
-            System.out.println("QR code image written to byte array successfully.");
 
             return baos.toByteArray();
 
-        } catch (IOException e) {
-            System.err.println("IOException during QR code generation: " + e.getMessage());
-            throw new RuntimeException("QR 코드 생성 중 입출력 오류가 발생했습니다: " + e.getMessage());
-        } catch (WriterException e) {
-            System.err.println("WriterException during QR code generation: " + e.getMessage());
-            throw new RuntimeException("QR 코드 생성 중 WriterException이 발생했습니다: " + e.getMessage());
-        } catch (RuntimeException e) {
-            System.err.println("RuntimeException during QR code generation: " + e.getMessage());
-            throw e;
+        } catch (IOException | WriterException e) {
+            throw new RuntimeException("QR 코드 생성 중 오류가 발생했습니다: " + e.getMessage());
         }
     }
 
@@ -128,7 +109,6 @@ public class CreateQrService {
      */
     public FileSystemResource downloadPhoto(String groupId, String fileName) {
         String filePath = qrCodeImagePath + "/" + fileName;
-        System.out.println("Trying to access file at: " + filePath);
 
         File file = new File(filePath);
         if (!file.exists()) {

@@ -6,6 +6,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.io.IOException;
@@ -20,6 +21,7 @@ import java.time.format.DateTimeFormatter;
  * @since 2024.11.03
  * @author 김이현
  */
+@Service
 public class FileAccessService {
     final long EXPIRE = 300;//만료 기간 초 단위
     // 기한 지난 파일 삭제시 필요한 메소드

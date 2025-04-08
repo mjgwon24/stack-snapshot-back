@@ -21,7 +21,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 @RestController
 @RequestMapping("/api")
 @Tag(name = "QR 코드 API", description = "QR 코드 생성 및 사진 다운로드 API")
-public class CreateQrRestController {
+public class QrRestController {
 
     private final CreateQrService createQrService;
 

@@ -53,7 +53,25 @@ public class PhotoService {
      */
     public GroupPhotosResponseDto uploadPhotos(List<MultipartFile> images) throws IOException {
         List<String> photos = new ArrayList<>();
+        File uploadDir = new File(uploadDirectory);
         int groupId = 1;
+
+        // 업로드 디렉토리 존재 여부 확인 및 생성
+        if (uploadDir.exists()) {
+            File[] groupDirs = uploadDir.listFiles(File::isDirectory);
+            if (groupDirs != null) {
+                for (File groupDir : groupDirs) {
+                    String dirName = groupDir.getName();
+                    if (dirName.startsWith("group")) {
+                        try {
+                            int existingGroupId = Integer.parseInt(dirName.substring(5));
+                            groupId = Math.max(groupId, existingGroupId + 1);
+                        } catch (NumberFormatException ignored) {
+                        }
+                    }
+                }
+            }
+        }
 
         // 공통 date와 timeStamp 생성
         SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmmss");

@@ -38,7 +38,7 @@ public class FileAccessService {
         return dateTime.toEpochSecond(ZoneOffset.UTC);
     }
 
-    private ResponseEntity<Resource> make_response(File file) throws IOException {
+    public ResponseEntity<Resource> make_response(File file) throws IOException {
         Resource resource = new FileSystemResource(file);
 
         String mimeType = Files.probeContentType(file.toPath());

@@ -9,8 +9,10 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import stackup.stack_snapshot_back.dto.GeneratedFileInfo;
+import stackup.stack_snapshot_back.dto.GroupPhotosResponseDto;
 import stackup.stack_snapshot_back.dto.SelectFrameRequestDto;
-import stackup.stack_snapshot_back.dto.SelectFrameResponseDto;
+import stackup.stack_snapshot_back.dto.PhotoResponseDto;
 import stackup.stack_snapshot_back.util.FileNameGenerator;
 
 import java.io.File;
@@ -18,8 +20,11 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * 사진 처리 서비스
@@ -44,45 +49,91 @@ public class PhotoService {
     /**
      * 원본 사진 업로드 API
      * @param images 업로드할 사진 리스트
-     * @return 업로드된 사진 URL 리스트
+     * @return GroupPhotosResponseDto groupId, date, timeStamp, (List)fileNames
      */
-    public List<String> uploadPhotos(List<MultipartFile> images) throws IOException {
-        List<String> fileUrls = new ArrayList<>();
+    public GroupPhotosResponseDto uploadPhotos(List<MultipartFile> images) throws IOException {
+        List<String> photos = new ArrayList<>();
+        int groupId = 1;
+
+        // 공통 date와 timeStamp 생성
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmmss");
+        String date = sdf.format(new Date());
+        String timeStamp = date.split("_")[1];
+        date = date.split("_")[0];
+
         for (int i = 0; i < images.size(); i++) {
             MultipartFile image = images.get(i);
-            File directory = new File(uploadDirectory);
+            File groupDirectory = new File(uploadDirectory, "group" + groupId);
 
-            if (!directory.exists() && !directory.mkdirs()) {
-                throw new IOException("Failed to create upload directory: " + uploadDirectory);
+            if (!groupDirectory.exists() && !groupDirectory.mkdirs()) {
+                throw new IOException("Failed to create group directory: " + groupDirectory.getAbsolutePath());
             }
 
-            String fileName = fileNameGenerator.generateOriginalFileName("1", i + 1, image.getOriginalFilename());
-            Path filePath = Paths.get(uploadDirectory, fileName);
+            GeneratedFileInfo fileInfo = fileNameGenerator.generateOriginalFileName(groupId, i + 1, Objects.requireNonNull(image.getOriginalFilename()), date, timeStamp);
+            Path filePath = Paths.get(groupDirectory.getAbsolutePath(), fileInfo.getFileName());
             image.transferTo(filePath.toFile());
 
-            String fileUrl = "/original-photo/" + fileName;
-            fileUrls.add(fileUrl);
+            photos.add(fileInfo.getFileName());
         }
-        return fileUrls;
+
+        return GroupPhotosResponseDto.builder()
+                .groupId(groupId)
+                .date(date)
+                .timeStamp(timeStamp)
+                .fileNames(photos)
+                .build();
     }
 
     /**
-     * 업로드된 전체 사진 리스트 가져오기
-     * @return 업로드된 전체 사진 URL 리스트
+     * 업로드된 groupId 기반 사진 리스트 반환
+     * @param groupId 그룹 ID
+     * @return GroupPhotosResponseDto groupId, date, timeStamp, (List)fileNames
      */
-    public List<String> getUploadedPhotos() {
-        List<String> fileUrls = new ArrayList<>();
-        File directory = new File(uploadDirectory);
-        File[] files = directory.listFiles((dir, name) -> name.toLowerCase().endsWith(".png"));
+    public GroupPhotosResponseDto getUploadedPhotos(int groupId) {
+        List<String> fileNames = new ArrayList<>();
+        File groupDirectory = new File(uploadDirectory, "group" + groupId);
+        File[] files = groupDirectory.listFiles((dir, name) -> name.toLowerCase().endsWith(".png"));
 
+        // 업로드된 사진이 있는 경우
         if (files != null) {
             for (File file : files) {
-                String fileUrl = "/stack-photo/" + file.getName();
-                fileUrls.add(fileUrl);
+//                String fileUrl = "/stack-photo/" + file.getName();
+                fileNames.add(file.getName());
             }
         }
 
-        return fileUrls;
+        String date = fileNames.get(1).split("_")[2];
+        String timeStamp = fileNames.get(1).split("_")[3];
+
+        return GroupPhotosResponseDto.builder()
+                .groupId(groupId)
+                .date(date)
+                .timeStamp(timeStamp)
+                .fileNames(fileNames)
+                .build();
+    }
+
+    /**
+     * 업로드된 groupId, index 기반 사진 반환
+     * @param groupId 그룹 ID
+     * @param index 사진 인덱스
+     * @return ResponseEntity<Resource> 사진 파일 리소스
+     */
+    public ResponseEntity<Resource> getUploadedPhoto(int groupId, Integer index) throws IOException {
+        File groupDirectory = new File(uploadDirectory, "group" + groupId);
+        File[] files = groupDirectory.listFiles((dir, name) -> name.toLowerCase().endsWith(".png"));
+
+        // 업로드된 사진이 있는 경우
+        if (files != null) {
+            for (File file : files) {
+                // index가 동일한지 확인
+                if (file.getName().contains("_" + index + ".png")) {
+                    return fileAccessService.make_response(file);
+                }
+            }
+        }
+
+        return ResponseEntity.notFound().build();
     }
 
     /**
@@ -104,26 +155,37 @@ public class PhotoService {
     }
 
     /**
-     * 사진 업로드 및 프레임 선택 API
-     * @param requestDto 업로드 요청 데이터 (그룹 ID, 선택된 프레임 ID 포함)
+     * 선택된 프레임 기반 사진 합성
+     * @param requestDto 업로드 요청 데이터 (selectedFrameId, groupId, file)
      * @param UPLOAD_PATH 업로드 경로
      * @param FRAME_PATH 프레임 경로
      * @param OUTPUT_PATH 출력 경로
-     * @return 업로드된 사진과 선택된 프레임을 합성한 결과 데이터
-     * @throws IOException 입출력 예외
+     * @return PhotoResponseDto date, timeStamp, fileName
      */
-    public SelectFrameResponseDto uploadFile(SelectFrameRequestDto requestDto, String UPLOAD_PATH, String FRAME_PATH, String OUTPUT_PATH) throws IOException {
+    public PhotoResponseDto uploadFile(SelectFrameRequestDto requestDto, String UPLOAD_PATH, String FRAME_PATH, String OUTPUT_PATH) throws IOException {
         List<MultipartFile> files = requestDto.getFile();
-        String GroupID = requestDto.getGroupID();
-        int FrameID = requestDto.getSelectedFrameID();
+        int groupId = requestDto.getGroupId();
+        int frameId = requestDto.getSelectedFrameId();
 
-        SelectFrameResponseDto response = new SelectFrameResponseDto();
-        response.setGroupID(GroupID);
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmmss");
+        String date = sdf.format(new Date());
+        String timeStamp = date.split("_")[1];
+        date = date.split("_")[0];
 
-        List<String> fileNames = selectFrameService.FileUpload(UPLOAD_PATH, GroupID, files);
-        String combinedImagePath = selectFrameService.mergeImages(fileNames, GroupID, FrameID, UPLOAD_PATH, FRAME_PATH, OUTPUT_PATH);
-        response.setOutputPath(combinedImagePath);
+        // 업로드된 파일 처리
+        List<String> fileNames = selectFrameService.FileUpload(UPLOAD_PATH, groupId, files);
 
+        // 이미지 합성
+        String combinedImagePath = selectFrameService.mergeImages(fileNames, groupId, frameId, date, timeStamp, UPLOAD_PATH, FRAME_PATH, OUTPUT_PATH);
+
+        PhotoResponseDto response = PhotoResponseDto.builder()
+                .groupId(groupId)
+                .date(date)
+                .timeStamp(timeStamp)
+                .fileName(combinedImagePath)
+                .build();
+
+        // 임시 파일 삭제
         for (String fileName : fileNames) {
             File file = new File(UPLOAD_PATH + fileName);
             if (file.exists()) {
@@ -132,6 +194,17 @@ public class PhotoService {
         }
 
         return response;
+    }
+
+    /**
+     * 최종 합성 이미지 반환
+     * @param fileName 최종 합성 이미지 파일 이름
+     * @param OUTPUT_PATH 출력 경로
+     * @return 다운로드할 최종 합성 이미지 파일 리소스
+     */
+    public ResponseEntity<Resource> getFinalFile(String fileName, String OUTPUT_PATH) throws IOException {
+        File file = new File(OUTPUT_PATH + fileName);
+        return fileAccessService.make_response(file);
     }
 
     /**
@@ -145,17 +218,5 @@ public class PhotoService {
      */
     public ResponseEntity<Resource> getFile(String groupid, String date, String index, String UPLOAD_PATH) throws IOException {
         return fileAccessService.read_File(groupid, date, index, UPLOAD_PATH, false);
-    }
-
-    /**
-     * 최종 합성 이미지 다운로드 API
-     * @param date 촬영 날짜
-     * @param groupid 그룹 ID
-     * @param OUTPUT_PATH 출력 경로
-     * @return 다운로드할 최종 합성 이미지 파일 리소스
-     * @throws IOException 입출력 예외
-     */
-    public ResponseEntity<Resource> getFinalFile(String date, String groupid, String OUTPUT_PATH) throws IOException {
-        return fileAccessService.read_File(groupid, date, null, OUTPUT_PATH, true);
     }
 }

@@ -10,8 +10,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import stackup.stack_snapshot_back.dto.GroupPhotosResponseDto;
 import stackup.stack_snapshot_back.dto.SelectFrameRequestDto;
-import stackup.stack_snapshot_back.dto.SelectFrameResponseDto;
+import stackup.stack_snapshot_back.dto.PhotoResponseDto;
 import stackup.stack_snapshot_back.service.PhotoService;
 
 import java.io.IOException;
@@ -45,29 +46,51 @@ public class PhotoRestController {
     /**
      * 사진 업로드 API
      * @param images 업로드 할 사진 리스트
-     * @return 업로드 된 사진 URL 리스트
+     * @return GroupPhotosResponseDto groupId, date, timeStamp, (List)fileNames
      */
     @PostMapping
-    public ResponseEntity<List<String>> uploadPhotos(@RequestParam("images") List<MultipartFile> images) {
+    public ResponseEntity<GroupPhotosResponseDto> uploadPhotos(List<MultipartFile> images) {
         try {
-            List<String> fileUrls = photoService.uploadPhotos(images);
-            return ResponseEntity.ok(fileUrls);
+            GroupPhotosResponseDto responseDto = photoService.uploadPhotos(images);
+            return new ResponseEntity<>(responseDto, HttpStatus.OK);
         } catch (IOException e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
     }
 
     /**
-     * 업로드 사진 목록 조회 API
-     * @return 업로드 된 사진 URL 리스트
+     * 업로드 사진 groupId 기반 목록 조회 API
+     * @param groupId 그룹 ID
+     * @return GroupPhotosResponseDto groupId, date, timeStamp, (List)fileNames
      */
-    @GetMapping
-    public ResponseEntity<List<String>> getAllPhotos() {
-        List<String> fileUrls = photoService.getUploadedPhotos();
-        if (fileUrls.isEmpty()) {
-            return ResponseEntity.notFound().build();
+    @GetMapping("/group/{groupId}")
+    public ResponseEntity<GroupPhotosResponseDto> getPhotosByGroupId(@PathVariable("groupId") Integer groupId) {
+        try {
+            GroupPhotosResponseDto photos = photoService.getUploadedPhotos(groupId);
+
+            if (photos == null) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+            }
+
+            return ResponseEntity.ok(photos);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
-        return ResponseEntity.ok(fileUrls);
+    }
+
+    /**
+     * 업로드 사진 groupId 기반 개별 조회 API
+     * @param groupId 그룹 ID
+     * @param index 사진 인덱스
+     * @return 사진 파일 리소스
+     */
+    @GetMapping("/group/{groupId}/{index}")
+    public ResponseEntity<Resource> getOriginPhotoByGroupAndIndex(@PathVariable("groupId") Integer groupId, @PathVariable("index") Integer index) {
+        try {
+            return photoService.getUploadedPhoto(groupId, index);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
 
     /**
@@ -86,44 +109,30 @@ public class PhotoRestController {
 
     /**
      * 프레임 선택 및 사진 업로드 API
-     * @param requestDto 업로드 요청 데이터 (selectedFrameID, groupID, List file)
-     * @return groupId, outputPath
-     * @throws IllegalArgumentException
-     * @throws IOException
+     * @param SelectFrameRequestDto 업로드 요청 데이터 (selectedFrameId, groupId, file)
+     * @return PhotoResponseDto date, timeStamp, fileName
      */
     @PostMapping("/frames")
-    public ResponseEntity<SelectFrameResponseDto> uploadWithFrame(@ModelAttribute SelectFrameRequestDto requestDto) throws IllegalArgumentException, IOException {
-        SelectFrameResponseDto response = photoService.uploadFile(requestDto, UPLOAD_PATH, FRAME_PATH, OUTPUT_PATH);
-        return new ResponseEntity<>(response, HttpStatus.OK);
-    }
-
-    /**
-     * 특정 날짜 및 그룹 사진 조회 API
-     * @param date 촬영 날짜
-     * @param groupId 그룹 ID
-     * @return 사진 파일 리소스
-     * @throws IOException
-     */
-    @GetMapping("/groups/{groupId}/dates/{date}/photos/{index}")
-    public ResponseEntity<Resource> getPhotoByGroupAndDate(@PathVariable("groupId") String groupId, @PathVariable("date") String date, @PathVariable("index") String index) throws IOException {
+    public ResponseEntity<PhotoResponseDto> uploadWithFrame(@ModelAttribute SelectFrameRequestDto requestDto) {
         try {
-            return photoService.getFile(groupId, date, index, UPLOAD_PATH);
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            PhotoResponseDto response = photoService.uploadFile(requestDto, UPLOAD_PATH, FRAME_PATH, OUTPUT_PATH);
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        } catch (IOException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
     }
 
     /**
-     * 특정 날짜 및 그룹의 최종 합성 이미지 조회 API
-     * @param groupId 그룹 ID
-     * @param date 촬영 날짜
+     * 최종 합성 이미지 조회 API
+     * @param fileName 최종 합성 이미지 파일 이름
      * @return 최종 합성 이미지 파일 리소스
-     * @throws IOException
      */
-    @GetMapping("/groups/{groupId}/dates/{date}/final")
-    public ResponseEntity<Resource> getFinalPhoto(@PathVariable("groupId") String groupId, @PathVariable("date") String date) throws IOException {
+    @GetMapping("/final/{fileName:.+}")
+    public ResponseEntity<Resource> getFinalPhoto(@PathVariable("fileName") String fileName) {
         try {
-            return photoService.getFinalFile(date, groupId, OUTPUT_PATH);
+            return photoService.getFinalFile(fileName, OUTPUT_PATH);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }

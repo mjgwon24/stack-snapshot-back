@@ -149,25 +149,27 @@ public class SelectFrameService {
     }
 
     /** 선택된 이미지 경로와 GroupID, FrameID를 통해 완성 사진을 생성하는 서비스
-     * @param imageFiles
-     * @param GroupID
-     * @param FrameId
-     * @param UPLOAD_PATH
-     * @param FRAME_PATH
-     * @param OUTPUT_PATH
-     * @return Date
-     * @throws IOException
+     * @param imageFiles 선택된 이미지 경로
+     * @param groupId 그룹 ID
+     * @param frameId 프레임 ID
+     * @param UPLOAD_PATH 업로드 경로
+     * @param FRAME_PATH 프레임 경로
+     * @param OUTPUT_PATH 출력 경로
+     * @return 파일명
      */
-    public String mergeImages(List<String> imageFiles,String GroupID,int FrameId,String UPLOAD_PATH,String FRAME_PATH,String OUTPUT_PATH) throws IOException {
-        if(FRAME_PATH ==null){
-            throw new IllegalArgumentException("FRAME_PATH가 null입니다.");
-        }
-        if(FrameId>4||FrameId<1){
-            throw new IllegalArgumentException("FramdId의 범위는 1~4입니다.");
-        }
+    public String mergeImages(List<String> imageFiles,
+                              int groupId,
+                              int frameId,
+                              String date,
+                              String timeStamp,
+                              String UPLOAD_PATH,
+                              String FRAME_PATH,
+                              String OUTPUT_PATH) throws IOException {
+        if(FRAME_PATH ==null) throw new IllegalArgumentException("FRAME_PATH가 null입니다.");
+        if(frameId>4||frameId<1) throw new IllegalArgumentException("FramdId의 범위는 1~4입니다.");
 
         //FrameId에 해당하는 프레임에 필요한 이미지의 수를 구함
-        int ImageCount = OFFSET[FrameId-1].length;
+        int ImageCount = OFFSET[frameId-1].length;
 
         if (imageFiles.size() != ImageCount) {
             throw new IllegalArgumentException("이미지 파일의 개수가 프레임에 맞지 않습니다. : "+imageFiles.size()+"/"+ImageCount);
@@ -175,55 +177,52 @@ public class SelectFrameService {
 
         try {
             BufferedImage baseImage = null;
+
             // 프레임 이미지 로드
-            if(FrameId!=4){
-                baseImage = ImageIO.read(new File(FRAME_PATH +FrameId+"."+EXT));
-            }
-            else{
+            if(frameId!=4){
+                baseImage = ImageIO.read(new File(FRAME_PATH +frameId+"."+EXT));
+            } else{
                 // FrameId가 4일 현재 날짜(일)에 따라 불러옴
                 if(new Date().getDate()!=1){
-                    baseImage = ImageIO.read(new File(FRAME_PATH +FrameId+"-1."+EXT));
+                    baseImage = ImageIO.read(new File(FRAME_PATH +frameId+"-1."+EXT));
                 }
                 else{
-                    baseImage = ImageIO.read(new File(FRAME_PATH +FrameId+"-2."+EXT));
+                    baseImage = ImageIO.read(new File(FRAME_PATH +frameId+"-2."+EXT));
                 }
             }
-
 
             Graphics2D frame = baseImage.createGraphics();
 
             // 프레임에 들어갈 사진 저장하는 변수
             BufferedImage Image;
 
-
             // 프레임에 들어갈 이미지의 수 만큼 반복
             for(int i=0;i<ImageCount;i++){
                 System.out.println(i);
                 Image = ImageIO.read(new File(UPLOAD_PATH+imageFiles.get(i)));
-                frame.drawImage(Image,OFFSET[FrameId-1][i][0],OFFSET[FrameId-1][i][1],null);
-
+                frame.drawImage(Image,OFFSET[frameId-1][i][0],OFFSET[frameId-1][i][1],null);
             }
 
             BufferedImage second_baseImage;
+
             // 프레임 이미지 로드
-            if(FrameId!=4){
-                second_baseImage = ImageIO.read(new File(FRAME_PATH +FrameId+"."+EXT));
+            if(frameId!=4){
+                second_baseImage = ImageIO.read(new File(FRAME_PATH +frameId+"."+EXT));
             }
             else{
                 if(new Date().getDate()!=1){
-                    second_baseImage = ImageIO.read(new File(FRAME_PATH +FrameId+"-1."+EXT));
+                    second_baseImage = ImageIO.read(new File(FRAME_PATH +frameId+"-1."+EXT));
                 }
                 else{
-                    second_baseImage = ImageIO.read(new File(FRAME_PATH +FrameId+"-2."+EXT));
+                    second_baseImage = ImageIO.read(new File(FRAME_PATH +frameId+"-2."+EXT));
                 }
             }
 
-
             frame.drawImage(second_baseImage,0,0,null);
-            if(FrameId!=4){
+            if(frameId!=4){
                 String current = generateCurrentDate();
                 // Font.PLAIN 부분 {Font. PLAIN,Font. BOLD,Font. ITALIC} 중 선택 가능
-                Font font = new Font(FONTNAME, Font.PLAIN,FONT_SIZE_AT_FRAME[FrameId-1]);
+                Font font = new Font(FONTNAME, Font.PLAIN,FONT_SIZE_AT_FRAME[frameId-1]);
                 Rectangle r = getFontrect(current, font);
 
                 int width = (int) r.getWidth();
@@ -233,11 +232,11 @@ public class SelectFrameService {
                 Graphics2D g2d = getG2D(img);
                 g2d.setFont(font);
                 FontMetrics fm = g2d.getFontMetrics();
-                g2d.setColor(TEXT_COLOR[FrameId-1]);
+                g2d.setColor(TEXT_COLOR[frameId-1]);
                 g2d.drawString(current, 0, fm.getAscent());
 
 
-                frame.drawImage(img,TEXT_OFFSET[FrameId-1][0],TEXT_OFFSET[FrameId-1][1],null);
+                frame.drawImage(img,TEXT_OFFSET[frameId-1][0],TEXT_OFFSET[frameId-1][1],null);
                 g2d.dispose();
             }
 
@@ -247,15 +246,15 @@ public class SelectFrameService {
             //파일명 생성을 위한 FileNameGenerator 객체 생성
             FileNameGenerator filenamegenerator = new FileNameGenerator();
 
-            //GroupID에 대해 최종 파일명을 할당 받음
-            String Finalfilename = filenamegenerator.generateFinalFileName(GroupID);
+            // 완성된 사진 파일명 예: group_1_final_20241014_215154.png
+            String fileName = "group_" + groupId + "_final_" + date + "_" + timeStamp + ".png";
 
             //최종 파일 생성 및 이미지 쓰기
-            File outputFile = new File(OUTPUT_PATH+Finalfilename);
+            File outputFile = new File(OUTPUT_PATH+fileName);
 
             ImageIO.write(baseImage, EXT, outputFile);
 
-            return Finalfilename.split("final_")[1].split("\\.")[0]; // date 부분만 반환
+            return fileName;
         } catch (Exception e) {
             throw new IOException("이미지 파일 읽기중 문제가 생겼습니다.:"+e);
         }
@@ -264,11 +263,11 @@ public class SelectFrameService {
     /**
      * 파일을 업로드 해서 저장된 경로 리스트를 반환하는 서비스
      * @param UPLOAD_PATH
-     * @param GroupID
+     * @param groupId
      * @param files
      * @return FileNames
      */
-    public List<String> FileUpload(String UPLOAD_PATH,String GroupID,List<MultipartFile> files){
+    public List<String> FileUpload(String UPLOAD_PATH, Integer groupId,List<MultipartFile> files){
         List<String> FileNames = new ArrayList<>();
 
         Path uploadPath = Paths.get(UPLOAD_PATH);
@@ -276,8 +275,9 @@ public class SelectFrameService {
         // uploadPath에 해당하는 위치가 없거나 파일이라면
         if (!Files.exists(uploadPath) || !Files.isDirectory(uploadPath)) {
             // 폴더 생성 및 검사
-            if(new File(uploadPath+GroupID).mkdirs()){
-                System.out.println("Directory created. : "+uploadPath+GroupID);
+            Path groupPath = uploadPath.resolve(groupId.toString());
+            if (new File(groupPath.toString()).mkdirs()) {
+                System.out.println("Directory created. : " + groupPath);
             }
         }
 
@@ -286,6 +286,12 @@ public class SelectFrameService {
 
         // 파일명 생성에 사용될 index
         int index = 0;
+
+        // 파일명 생성에 사용될 현재 날짜
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmmss");
+        String date = sdf.format(new Date());
+        String timeStamp = date.split("_")[1];
+        date = date.split("_")[0];
 
         // 받은 파일 목록 순회
         for(MultipartFile file:files) {
@@ -298,7 +304,7 @@ public class SelectFrameService {
                 byte[] bytes = file.getBytes();
 
                 // 파일명 및 파일 경로 생성
-                String filename = fileNameGenerator.generateOriginalFileName(GroupID,index,file.getOriginalFilename());
+                String filename = fileNameGenerator.generateOriginalFileName(groupId, index, file.getOriginalFilename(), date, timeStamp).getFileName();
                 Path path = Paths.get(uploadPath+"/"+filename);
                 // 파일에 데이터 쓰기
                 Files.write(path, bytes);

@@ -29,12 +29,13 @@ public class QRRestController {
      * QR 코드 생성 API
      * @param groupId 그룹 ID
      * @param date 날짜
+     * @param timeStamp 타임 스탬프
      * @return QR 코드 이미지 데이터
      */
     @PostMapping
-    public ResponseEntity<byte[]> createQrCode(@RequestParam String groupId, @RequestParam String date) {
+    public ResponseEntity<byte[]> createQrCode(@RequestParam("groupId") String groupId, @RequestParam("date") String date, @RequestParam("timeStamp") String timeStamp) {
         try {
-            byte[] qrCodeImage = qrService.generateQrCode(groupId, date);
+            byte[] qrCodeImage = qrService.generateQrCode(groupId, date, timeStamp);
             return ResponseEntity.ok()
                     .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"qrcode.png\"")
                     .contentType(MediaType.IMAGE_PNG)

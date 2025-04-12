@@ -71,16 +71,14 @@ public class QRService {
      * QR 코드 생성
      * @param groupId 그룹 ID
      * @param date 날짜
+     * @param timeStamp 타임 스탬프
      * @return QR 코드 이미지 데이터 (byte[])
      */
-    public byte[] generateQrCode(String groupId, String date) {
+    public byte[] generateQrCode(String groupId, String date, String timeStamp) {
         try {
-            String latestFileName = getLatestFileName(groupId);
-            if (latestFileName == null) {
-                throw new RuntimeException("파일 이름이 null입니다. groupId: " + groupId);
-            }
+            String fileName = "group_" + groupId + "_final_" + date + "_" + timeStamp + ".png";
 
-            String downloadUrl = serverUrl + "/api/qrs/" + groupId + "/photos/" + latestFileName;
+            String downloadUrl = serverUrl + "/api/qrs/" + groupId + "/photos/" + fileName;
 
             Map<EncodeHintType, Object> hints = new HashMap<>();
             hints.put(EncodeHintType.ERROR_CORRECTION, ErrorCorrectionLevel.H);

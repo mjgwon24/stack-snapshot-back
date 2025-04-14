@@ -17,6 +17,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.springframework.web.multipart.MultipartFile;
 import stackup.stack_snapshot_back.util.FileNameGenerator;
@@ -28,8 +29,10 @@ import stackup.stack_snapshot_back.util.FileNameGenerator;
  */
 @Service
 public class SelectFrameService {
+    // 프레임 이미지 캐시
+    private final ConcurrentHashMap<Integer, BufferedImage> frameImageCache = new ConcurrentHashMap<>();
+
     final String FONTNAME = "Pretendard";
-    // 저장될 이미지 포멧
     final String EXT = "png";
 
     final int[] FONT_SIZE_AT_FRAME = {
@@ -175,9 +178,11 @@ public class SelectFrameService {
         }
 
         try {
-            // 프레임 이미지 로드
+            // 프레임 이미지 로드 (loadFrameImage - 캐싱된 이미지 사용)
             BufferedImage baseImage = loadFrameImage(FRAME_PATH, frameId);
+            BufferedImage secondBaseImage = frameId != 4 ? baseImage : loadFrameImage(FRAME_PATH, frameId);
 
+            // Graphics2D 객체 생성
             Graphics2D frame = baseImage.createGraphics();
 
             // 프레임에 들어갈 이미지 그리기
@@ -187,7 +192,6 @@ public class SelectFrameService {
             }
 
             // 두 번째 프레임 이미지 덮어쓰기
-            BufferedImage secondBaseImage = loadFrameImage(FRAME_PATH, frameId);
             frame.drawImage(secondBaseImage, 0, 0, null);
 
             // 텍스트 추가 (frameId가 4가 아닌 경우)
@@ -217,11 +221,20 @@ public class SelectFrameService {
      * @return BufferedImage 프레임 이미지
      */
     private BufferedImage loadFrameImage(String FRAME_PATH, int frameId) throws IOException {
+        // 캐싱된 이미지가 있으면 반환
+        if (frameImageCache.containsKey(frameId)) return frameImageCache.get(frameId);
+
+        // 캐싱된 이미지가 없으면 로드
+        BufferedImage frameImage;
         if (frameId != 4) {
-            return ImageIO.read(new File(FRAME_PATH + frameId + "." + EXT));
+            frameImage = ImageIO.read(new File(FRAME_PATH + frameId + "." + EXT));
+        } else {
+            String suffix = (new Date().getDate() != 1) ? "-1" : "-2";
+            frameImage = ImageIO.read(new File(FRAME_PATH + frameId + suffix + "." + EXT));
         }
-        String suffix = (new Date().getDate() != 1) ? "-1" : "-2";
-        return ImageIO.read(new File(FRAME_PATH + frameId + suffix + "." + EXT));
+
+        frameImageCache.put(frameId, frameImage); // 캐싱
+        return frameImage;
     }
 
     /** 프레임에 텍스트 추가
@@ -230,17 +243,23 @@ public class SelectFrameService {
      * @param frameId 프레임 ID
      */
     private void addTextToFrame(Graphics2D frame, String text, int frameId) {
-        Font font = new Font(FONTNAME, Font.PLAIN, FONT_SIZE_AT_FRAME[frameId - 1]);
+        int frameIdex = frameId - 1;
+
+        Font font = new Font(FONTNAME, Font.PLAIN, FONT_SIZE_AT_FRAME[frameIdex]);
+
+//        Rectangle textRect = getFontrect(text, font);
+//        BufferedImage textImage = new BufferedImage(textRect.width, textRect.height, BufferedImage.TYPE_INT_ARGB);
+//        Graphics2D g2d = getG2D(textImage);
+//        g2d.setFont(font);
+//        g2d.setColor(TEXT_COLOR[frameIdex]);
+//        g2d.drawString(text, 0, g2d.getFontMetrics().getAscent());
+//        g2d.dispose();
+//        frame.drawImage(textImage, TEXT_OFFSET[frameIdex][0], TEXT_OFFSET[frameIdex][1], null);
+
         Rectangle textRect = getFontrect(text, font);
-
-        BufferedImage textImage = new BufferedImage(textRect.width, textRect.height, BufferedImage.TYPE_INT_ARGB);
-        Graphics2D g2d = getG2D(textImage);
-        g2d.setFont(font);
-        g2d.setColor(TEXT_COLOR[frameId - 1]);
-        g2d.drawString(text, 0, g2d.getFontMetrics().getAscent());
-        g2d.dispose();
-
-        frame.drawImage(textImage, TEXT_OFFSET[frameId - 1][0], TEXT_OFFSET[frameId - 1][1], null);
+        frame.setFont(font);
+        frame.setColor(TEXT_COLOR[frameIdex]);
+        frame.drawString(text, TEXT_OFFSET[frameIdex][0], TEXT_OFFSET[frameIdex][1] + textRect.height);
     }
 
     /**

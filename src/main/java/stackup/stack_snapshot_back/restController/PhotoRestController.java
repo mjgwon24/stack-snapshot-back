@@ -3,6 +3,7 @@ package stackup.stack_snapshot_back.restController;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.io.Resource;
@@ -22,6 +23,7 @@ import java.util.List;
  * 사진 처리 API 공통 컨트롤러
  * @since 2024.11.03
  */
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/photos")
@@ -49,11 +51,17 @@ public class PhotoRestController {
      * @return GroupPhotosResponseDto groupId, date, timeStamp, (List)fileNames
      */
     @PostMapping
-    public ResponseEntity<GroupPhotosResponseDto> uploadPhotos(List<MultipartFile> images) {
+    public ResponseEntity<GroupPhotosResponseDto> uploadPhotos(@RequestParam("images") List<MultipartFile> images) {
+        if (images.isEmpty()) {
+            log.error("업로드할 사진이 없습니다.");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        }
+
         try {
             GroupPhotosResponseDto responseDto = photoService.uploadPhotos(images);
             return new ResponseEntity<>(responseDto, HttpStatus.OK);
         } catch (IOException e) {
+            log.error("사진 업로드 중 오류 발생: {}", e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
     }
@@ -109,11 +117,11 @@ public class PhotoRestController {
 
     /**
      * 프레임 선택 및 사진 업로드 API
-     * @param SelectFrameRequestDto 업로드 요청 데이터 (selectedFrameId, groupId, file)
+     * @param SelectFrameRequestDto 업로드 요청 데이터 (selectedFrameId, groupId, List<String> selectPhotoNames)
      * @return PhotoResponseDto date, timeStamp, fileName
      */
     @PostMapping("/frames")
-    public ResponseEntity<PhotoResponseDto> uploadWithFrame(@ModelAttribute SelectFrameRequestDto requestDto) {
+    public ResponseEntity<PhotoResponseDto> uploadWithFrame(@RequestBody SelectFrameRequestDto requestDto) {
         try {
             PhotoResponseDto response = photoService.uploadFile(requestDto, UPLOAD_PATH, FRAME_PATH, OUTPUT_PATH);
             return new ResponseEntity<>(response, HttpStatus.OK);

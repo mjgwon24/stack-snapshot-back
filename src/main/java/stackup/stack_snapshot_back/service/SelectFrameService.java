@@ -165,99 +165,82 @@ public class SelectFrameService {
                               String UPLOAD_PATH,
                               String FRAME_PATH,
                               String OUTPUT_PATH) throws IOException {
-        if(FRAME_PATH ==null) throw new IllegalArgumentException("FRAME_PATH가 null입니다.");
-        if(frameId>4||frameId<1) throw new IllegalArgumentException("FramdId의 범위는 1~4입니다.");
+        if(FRAME_PATH == null) throw new IllegalArgumentException("FRAME_PATH가 null입니다.");
+        if(frameId < 1 || frameId > 4) throw new IllegalArgumentException("FramdId의 범위는 1~4입니다.");
 
-        //FrameId에 해당하는 프레임에 필요한 이미지의 수를 구함
-        int ImageCount = OFFSET[frameId-1].length;
-
-        if (imageFiles.size() != ImageCount) {
-            throw new IllegalArgumentException("이미지 파일의 개수가 프레임에 맞지 않습니다. : "+imageFiles.size()+"/"+ImageCount);
+        // 프레임에 따라 이미지 개수 결정
+        int imageCount = OFFSET[frameId - 1].length;
+        if (imageFiles.size() != imageCount) {
+            throw new IllegalArgumentException("이미지 파일의 개수가 프레임에 맞지 않습니다. : " + imageFiles.size() + "/" + imageCount);
         }
 
         try {
-            BufferedImage baseImage = null;
-
             // 프레임 이미지 로드
-            if(frameId!=4){
-                baseImage = ImageIO.read(new File(FRAME_PATH +frameId+"."+EXT));
-            } else{
-                // FrameId가 4일 현재 날짜(일)에 따라 불러옴
-                if(new Date().getDate()!=1){
-                    baseImage = ImageIO.read(new File(FRAME_PATH +frameId+"-1."+EXT));
-                }
-                else{
-                    baseImage = ImageIO.read(new File(FRAME_PATH +frameId+"-2."+EXT));
-                }
-            }
+            BufferedImage baseImage = loadFrameImage(FRAME_PATH, frameId);
 
             Graphics2D frame = baseImage.createGraphics();
 
-            // 프레임에 들어갈 사진 저장하는 변수
-            BufferedImage Image;
-
-            // 프레임에 들어갈 이미지의 수 만큼 반복
-            for(int i=0;i<ImageCount;i++){
-                System.out.println(i);
-                Image = ImageIO.read(new File(UPLOAD_PATH+imageFiles.get(i)));
-                frame.drawImage(Image,OFFSET[frameId-1][i][0],OFFSET[frameId-1][i][1],null);
+            // 프레임에 들어갈 이미지 그리기
+            for (int i = 0; i < imageCount; i++) {
+                BufferedImage image = ImageIO.read(new File(UPLOAD_PATH + "group" + groupId + "/" + imageFiles.get(i)));
+                frame.drawImage(image, OFFSET[frameId - 1][i][0], OFFSET[frameId - 1][i][1], null);
             }
 
-            BufferedImage second_baseImage;
+            // 두 번째 프레임 이미지 덮어쓰기
+            BufferedImage secondBaseImage = loadFrameImage(FRAME_PATH, frameId);
+            frame.drawImage(secondBaseImage, 0, 0, null);
 
-            // 프레임 이미지 로드
-            if(frameId!=4){
-                second_baseImage = ImageIO.read(new File(FRAME_PATH +frameId+"."+EXT));
-            }
-            else{
-                if(new Date().getDate()!=1){
-                    second_baseImage = ImageIO.read(new File(FRAME_PATH +frameId+"-1."+EXT));
-                }
-                else{
-                    second_baseImage = ImageIO.read(new File(FRAME_PATH +frameId+"-2."+EXT));
-                }
+            // 텍스트 추가 (frameId가 4가 아닌 경우)
+            if (frameId != 4) {
+                String currentDate = generateCurrentDate();
+                addTextToFrame(frame, currentDate, frameId);
             }
 
-            frame.drawImage(second_baseImage,0,0,null);
-            if(frameId!=4){
-                String current = generateCurrentDate();
-                // Font.PLAIN 부분 {Font. PLAIN,Font. BOLD,Font. ITALIC} 중 선택 가능
-                Font font = new Font(FONTNAME, Font.PLAIN,FONT_SIZE_AT_FRAME[frameId-1]);
-                Rectangle r = getFontrect(current, font);
-
-                int width = (int) r.getWidth();
-                int height = (int) r.getHeight();
-
-                BufferedImage img = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
-                Graphics2D g2d = getG2D(img);
-                g2d.setFont(font);
-                FontMetrics fm = g2d.getFontMetrics();
-                g2d.setColor(TEXT_COLOR[frameId-1]);
-                g2d.drawString(current, 0, fm.getAscent());
-
-
-                frame.drawImage(img,TEXT_OFFSET[frameId-1][0],TEXT_OFFSET[frameId-1][1],null);
-                g2d.dispose();
-            }
-
-            //프레임 위에 사진 이미지 작성 종료 후 닫기
             frame.dispose();
 
-            //파일명 생성을 위한 FileNameGenerator 객체 생성
-            FileNameGenerator filenamegenerator = new FileNameGenerator();
-
-            // 완성된 사진 파일명 예: group_1_final_20241014_215154.png
+            // 파일명 생성
             String fileName = "group_" + groupId + "_final_" + date + "_" + timeStamp + ".png";
 
-            //최종 파일 생성 및 이미지 쓰기
-            File outputFile = new File(OUTPUT_PATH+fileName);
-
+            // 최종 파일 생성 및 저장
+            File outputFile = new File(OUTPUT_PATH + fileName);
             ImageIO.write(baseImage, EXT, outputFile);
 
             return fileName;
         } catch (Exception e) {
             throw new IOException("이미지 파일 읽기중 문제가 생겼습니다.:"+e);
         }
+    }
+
+    /** 프레임 이미지 로드
+     * @param FRAME_PATH 프레임 경로
+     * @param frameId 프레임 ID
+     * @return BufferedImage 프레임 이미지
+     */
+    private BufferedImage loadFrameImage(String FRAME_PATH, int frameId) throws IOException {
+        if (frameId != 4) {
+            return ImageIO.read(new File(FRAME_PATH + frameId + "." + EXT));
+        }
+        String suffix = (new Date().getDate() != 1) ? "-1" : "-2";
+        return ImageIO.read(new File(FRAME_PATH + frameId + suffix + "." + EXT));
+    }
+
+    /** 프레임에 텍스트 추가
+     * @param frame 프레임 이미지
+     * @param text 추가할 텍스트
+     * @param frameId 프레임 ID
+     */
+    private void addTextToFrame(Graphics2D frame, String text, int frameId) {
+        Font font = new Font(FONTNAME, Font.PLAIN, FONT_SIZE_AT_FRAME[frameId - 1]);
+        Rectangle textRect = getFontrect(text, font);
+
+        BufferedImage textImage = new BufferedImage(textRect.width, textRect.height, BufferedImage.TYPE_INT_ARGB);
+        Graphics2D g2d = getG2D(textImage);
+        g2d.setFont(font);
+        g2d.setColor(TEXT_COLOR[frameId - 1]);
+        g2d.drawString(text, 0, g2d.getFontMetrics().getAscent());
+        g2d.dispose();
+
+        frame.drawImage(textImage, TEXT_OFFSET[frameId - 1][0], TEXT_OFFSET[frameId - 1][1], null);
     }
 
     /**

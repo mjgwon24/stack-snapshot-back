@@ -243,23 +243,23 @@ public class SelectFrameService {
      * @param frameId 프레임 ID
      */
     private void addTextToFrame(Graphics2D frame, String text, int frameId) {
-        int frameIdex = frameId - 1;
+        int frameIndex = frameId - 1;
 
-        Font font = new Font(FONTNAME, Font.PLAIN, FONT_SIZE_AT_FRAME[frameIdex]);
+        Font font = new Font(FONTNAME, Font.PLAIN, FONT_SIZE_AT_FRAME[frameIndex]);
 
 //        Rectangle textRect = getFontrect(text, font);
 //        BufferedImage textImage = new BufferedImage(textRect.width, textRect.height, BufferedImage.TYPE_INT_ARGB);
 //        Graphics2D g2d = getG2D(textImage);
 //        g2d.setFont(font);
-//        g2d.setColor(TEXT_COLOR[frameIdex]);
+//        g2d.setColor(TEXT_COLOR[frameIndex]);
 //        g2d.drawString(text, 0, g2d.getFontMetrics().getAscent());
 //        g2d.dispose();
-//        frame.drawImage(textImage, TEXT_OFFSET[frameIdex][0], TEXT_OFFSET[frameIdex][1], null);
+//        frame.drawImage(textImage, TEXT_OFFSET[frameIndex][0], TEXT_OFFSET[frameIndex][1], null);
 
         Rectangle textRect = getFontrect(text, font);
         frame.setFont(font);
-        frame.setColor(TEXT_COLOR[frameIdex]);
-        frame.drawString(text, TEXT_OFFSET[frameIdex][0], TEXT_OFFSET[frameIdex][1] + textRect.height);
+        frame.setColor(TEXT_COLOR[frameIndex]);
+        frame.drawString(text, TEXT_OFFSET[frameIndex][0], TEXT_OFFSET[frameIndex][1] + textRect.height);
     }
 
     /**

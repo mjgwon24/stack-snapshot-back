@@ -18,6 +18,7 @@ import stackup.stack_snapshot_back.service.PhotoService;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 /**
  * 사진 처리 API 공통 컨트롤러
@@ -121,15 +122,10 @@ public class PhotoRestController {
      * @return PhotoResponseDto date, timeStamp, fileName
      */
     @PostMapping("/frames")
-    public ResponseEntity<PhotoResponseDto> uploadWithFrame(@RequestBody SelectFrameRequestDto requestDto) {
-        try {
-            PhotoResponseDto response = photoService.uploadFile(requestDto, UPLOAD_PATH, FRAME_PATH, OUTPUT_PATH);
-            return new ResponseEntity<>(response, HttpStatus.OK);
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
-        } catch (IOException e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
-        }
+    public CompletableFuture<ResponseEntity<PhotoResponseDto>> uploadWithFrame(@RequestBody SelectFrameRequestDto requestDto) throws IOException {
+        return photoService.uploadFile(requestDto, UPLOAD_PATH, FRAME_PATH, OUTPUT_PATH)
+                .thenApply(response -> new ResponseEntity<>(response, HttpStatus.OK))
+                .exceptionally(ex -> new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR));
     }
 
     /**

@@ -2,6 +2,7 @@ package stackup.stack_snapshot_back.service;
 
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
@@ -30,6 +31,7 @@ import java.util.Objects;
  * 사진 처리 서비스
  * @ latest update 2025.04.08
  */
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class PhotoService {
@@ -174,14 +176,14 @@ public class PhotoService {
 
     /**
      * 선택된 프레임 기반 사진 합성
-     * @param requestDto 업로드 요청 데이터 (selectedFrameId, groupId, file)
+     * @param requestDto 업로드 요청 데이터 (selectedFrameId, groupId, List<String> selectPhotos)
      * @param UPLOAD_PATH 업로드 경로
      * @param FRAME_PATH 프레임 경로
      * @param OUTPUT_PATH 출력 경로
      * @return PhotoResponseDto date, timeStamp, fileName
      */
     public PhotoResponseDto uploadFile(SelectFrameRequestDto requestDto, String UPLOAD_PATH, String FRAME_PATH, String OUTPUT_PATH) throws IOException {
-        List<MultipartFile> files = requestDto.getFile();
+        List<String> selectPhotoNames = requestDto.getSelectPhotoNames();
         int groupId = requestDto.getGroupId();
         int frameId = requestDto.getSelectedFrameId();
 
@@ -190,28 +192,17 @@ public class PhotoService {
         String timeStamp = date.split("_")[1];
         date = date.split("_")[0];
 
-        // 업로드된 파일 처리
-        List<String> fileNames = selectFrameService.FileUpload(UPLOAD_PATH, groupId, files);
+        // 이미지 병합
+        String combinedImagePath = selectFrameService.mergeImages(
+                selectPhotoNames, groupId, frameId, date, timeStamp, UPLOAD_PATH, FRAME_PATH, OUTPUT_PATH
+        );
 
-        // 이미지 합성
-        String combinedImagePath = selectFrameService.mergeImages(fileNames, groupId, frameId, date, timeStamp, UPLOAD_PATH, FRAME_PATH, OUTPUT_PATH);
-
-        PhotoResponseDto response = PhotoResponseDto.builder()
+        return PhotoResponseDto.builder()
                 .groupId(groupId)
                 .date(date)
                 .timeStamp(timeStamp)
                 .fileName(combinedImagePath)
                 .build();
-
-        // 임시 파일 삭제
-        for (String fileName : fileNames) {
-            File file = new File(UPLOAD_PATH + fileName);
-            if (file.exists()) {
-                file.delete();
-            }
-        }
-
-        return response;
     }
 
     /**

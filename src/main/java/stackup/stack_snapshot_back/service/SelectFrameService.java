@@ -169,7 +169,7 @@ public class SelectFrameService {
                               String FRAME_PATH,
                               String OUTPUT_PATH) throws IOException {
         if(FRAME_PATH == null) throw new IllegalArgumentException("FRAME_PATH가 null입니다.");
-        if(frameId < 1 || frameId > 4) throw new IllegalArgumentException("FramdId의 범위는 1~4입니다.");
+        if(frameId < 1 || frameId > 4) throw new IllegalArgumentException("FrameId의 범위는 1~4입니다.");
 
         // 프레임에 따라 이미지 개수 결정
         int imageCount = OFFSET[frameId - 1].length;

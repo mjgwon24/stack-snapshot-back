@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.CompletableFuture;
 
 /**
  * 사진 처리 서비스
@@ -54,11 +55,8 @@ public class PhotoService {
      * @return GroupPhotosResponseDto groupId, date, timeStamp, (List)fileNames
      */
     public GroupPhotosResponseDto uploadPhotos(List<MultipartFile> images) throws IOException {
-        List<String> photos = new ArrayList<>();
-        File uploadDir = new File(uploadDirectory);
         int groupId = 1;
-
-        // 업로드 디렉토리 존재 여부 확인 및 생성
+        File uploadDir = new File(uploadDirectory);
         if (uploadDir.exists()) {
             File[] groupDirs = uploadDir.listFiles(File::isDirectory);
             if (groupDirs != null) {
@@ -75,26 +73,51 @@ public class PhotoService {
             }
         }
 
-        // 공통 date와 timeStamp 생성
+        // 날짜 및 시간 생성
         SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmmss");
-        String date = sdf.format(new Date());
-        String timeStamp = date.split("_")[1];
-        date = date.split("_")[0];
+        String dateTime = sdf.format(new Date());
+        String[] parts = dateTime.split("_");
+        String date = parts[0];
+        String timeStamp = parts[1];
 
-        for (int i = 0; i < images.size(); i++) {
-            MultipartFile image = images.get(i);
-            File groupDirectory = new File(uploadDirectory, "group" + groupId);
+        // 각 파일 업로드를 병렬 처리
+        List<CompletableFuture<String>> futures = new ArrayList<>();
+        int index = 0;
+        for (MultipartFile image : images) {
+            final int fileIndex = index;
+            int finalGroupId = groupId;
+            CompletableFuture<String> future = CompletableFuture.supplyAsync(() -> {
+                try {
+                    File groupDirectory = new File(uploadDirectory, "group" + finalGroupId);
 
-            if (!groupDirectory.exists() && !groupDirectory.mkdirs()) {
-                throw new IOException("Failed to create group directory: " + groupDirectory.getAbsolutePath());
-            }
+                    // synchronized - 경쟁 조건 방지
+                    synchronized (PhotoService.class) {
+                        if (!groupDirectory.exists() && !groupDirectory.mkdirs()) {
+                            throw new IOException("Failed to create group directory: " + groupDirectory.getAbsolutePath());
+                        }
+                    }
 
-            GeneratedFileInfo fileInfo = fileNameGenerator.generateOriginalFileName(groupId, i + 1, Objects.requireNonNull(image.getOriginalFilename()), date, timeStamp);
-            Path filePath = Paths.get(groupDirectory.getAbsolutePath(), fileInfo.getFileName());
-            image.transferTo(filePath.toFile());
-
-            photos.add(fileInfo.getFileName());
+                    GeneratedFileInfo fileInfo = fileNameGenerator.generateOriginalFileName(
+                            finalGroupId, fileIndex + 1, Objects.requireNonNull(image.getOriginalFilename()), date, timeStamp);
+                    Path filePath = Paths.get(groupDirectory.getAbsolutePath(), fileInfo.getFileName());
+                    image.transferTo(filePath.toFile());
+                    return fileInfo.getFileName();
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            });
+            futures.add(future);
+            index++;
         }
+        // 모든 업로드 작업 완료 후 파일명을 수집
+        CompletableFuture<Void> allFutures = CompletableFuture.allOf(
+                futures.toArray(new CompletableFuture[0])
+        );
+        List<String> photos = allFutures.thenApply(v -> {
+            List<String> fileNames = new ArrayList<>();
+            futures.forEach(f -> fileNames.add(f.join()));
+            return fileNames;
+        }).join();
 
         return GroupPhotosResponseDto.builder()
                 .groupId(groupId)
@@ -175,35 +198,66 @@ public class PhotoService {
     }
 
     /**
-     * 선택된 프레임 기반 사진 합성
+     * 선택된 프레임 기반 사진 합성 - 비동기
      * @param requestDto 업로드 요청 데이터 (selectedFrameId, groupId, List<String> selectPhotos)
      * @param UPLOAD_PATH 업로드 경로
      * @param FRAME_PATH 프레임 경로
      * @param OUTPUT_PATH 출력 경로
      * @return PhotoResponseDto date, timeStamp, fileName
      */
-    public PhotoResponseDto uploadFile(SelectFrameRequestDto requestDto, String UPLOAD_PATH, String FRAME_PATH, String OUTPUT_PATH) throws IOException {
+    public CompletableFuture<PhotoResponseDto> uploadFile(SelectFrameRequestDto requestDto, String UPLOAD_PATH, String FRAME_PATH, String OUTPUT_PATH) throws IOException {
         List<String> selectPhotoNames = requestDto.getSelectPhotoNames();
         int groupId = requestDto.getGroupId();
         int frameId = requestDto.getSelectedFrameId();
 
+        // 공통 date 및 timeStamp 생성
         SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmmss");
-        String date = sdf.format(new Date());
-        String timeStamp = date.split("_")[1];
-        date = date.split("_")[0];
+        String curDate = sdf.format(new Date());
+        String[] parts = curDate.split("_");
+        String date = parts[0];
+        String timeStamp = parts[1];
 
-        // 이미지 병합
-        String combinedImagePath = selectFrameService.mergeImages(
-                selectPhotoNames, groupId, frameId, date, timeStamp, UPLOAD_PATH, FRAME_PATH, OUTPUT_PATH
-        );
-
-        return PhotoResponseDto.builder()
-                .groupId(groupId)
-                .date(date)
-                .timeStamp(timeStamp)
-                .fileName(combinedImagePath)
-                .build();
+        // 비동기적으로 이미지 병합 작업 실행
+        return selectFrameService.mergeImagesAsync(selectPhotoNames, groupId, frameId, date, timeStamp, UPLOAD_PATH, FRAME_PATH, OUTPUT_PATH)
+                .thenApply(combinedImagePath -> PhotoResponseDto.builder()
+                        .groupId(groupId)
+                        .date(date)
+                        .timeStamp(timeStamp)
+                        .fileName(combinedImagePath)
+                        .build());
     }
+
+
+    /**
+     * 선택된 프레임 기반 사진 합성 - 동기
+     * @param requestDto 업로드 요청 데이터 (selectedFrameId, groupId, List<String> selectPhotos)
+     * @param UPLOAD_PATH 업로드 경로
+     * @param FRAME_PATH 프레임 경로
+     * @param OUTPUT_PATH 출력 경로
+     * @return PhotoResponseDto date, timeStamp, fileName
+     */
+//    public PhotoResponseDto uploadFile(SelectFrameRequestDto requestDto, String UPLOAD_PATH, String FRAME_PATH, String OUTPUT_PATH) throws IOException {
+//        List<String> selectPhotoNames = requestDto.getSelectPhotoNames();
+//        int groupId = requestDto.getGroupId();
+//        int frameId = requestDto.getSelectedFrameId();
+//
+//        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmmss");
+//        String date = sdf.format(new Date());
+//        String timeStamp = date.split("_")[1];
+//        date = date.split("_")[0];
+//
+//        // 이미지 병합
+//        String combinedImagePath = selectFrameService.mergeImages(
+//                selectPhotoNames, groupId, frameId, date, timeStamp, UPLOAD_PATH, FRAME_PATH, OUTPUT_PATH
+//        );
+//
+//        return PhotoResponseDto.builder()
+//                .groupId(groupId)
+//                .date(date)
+//                .timeStamp(timeStamp)
+//                .fileName(combinedImagePath)
+//                .build();
+//    }
 
     /**
      * 최종 합성 이미지 반환

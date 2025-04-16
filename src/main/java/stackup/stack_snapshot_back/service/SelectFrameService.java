@@ -3,6 +3,7 @@ package stackup.stack_snapshot_back.service;
 import lombok.extern.java.Log;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import javax.imageio.ImageIO;
@@ -17,6 +18,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.springframework.web.multipart.MultipartFile;
@@ -31,9 +33,28 @@ import stackup.stack_snapshot_back.util.FileNameGenerator;
 public class SelectFrameService {
     // 프레임 이미지 캐시
     private final ConcurrentHashMap<Integer, BufferedImage> frameImageCache = new ConcurrentHashMap<>();
+    private final BufferedImage[] frameCache = new BufferedImage[5];  // 인덱스 1~4 사용
 
     final String FONTNAME = "Pretendard";
     final String EXT = "png";
+
+    /** 프레임 이미지 로드
+     * @param FRAME_PATH 프레임 경로
+     * @param frameId 프레임 ID
+     * @return BufferedImage 프레임 이미지
+     */
+    private BufferedImage loadFrameImage(String FRAME_PATH, int frameId) throws IOException {
+        if (frameImageCache.containsKey(frameId)) return frameImageCache.get(frameId);
+        BufferedImage frameImage;
+        if (frameId != 4) {
+            frameImage = ImageIO.read(new File(FRAME_PATH + frameId + "." + EXT));
+        } else {
+            String suffix = (new java.util.Date().getDate() != 1) ? "-1" : "-2";
+            frameImage = ImageIO.read(new File(FRAME_PATH + frameId + suffix + "." + EXT));
+        }
+        frameImageCache.put(frameId, frameImage);
+        return frameImage;
+    }
 
     final int[] FONT_SIZE_AT_FRAME = {
             12,
@@ -215,26 +236,23 @@ public class SelectFrameService {
         }
     }
 
-    /** 프레임 이미지 로드
-     * @param FRAME_PATH 프레임 경로
-     * @param frameId 프레임 ID
-     * @return BufferedImage 프레임 이미지
-     */
-    private BufferedImage loadFrameImage(String FRAME_PATH, int frameId) throws IOException {
-        // 캐싱된 이미지가 있으면 반환
-        if (frameImageCache.containsKey(frameId)) return frameImageCache.get(frameId);
-
-        // 캐싱된 이미지가 없으면 로드
-        BufferedImage frameImage;
-        if (frameId != 4) {
-            frameImage = ImageIO.read(new File(FRAME_PATH + frameId + "." + EXT));
-        } else {
-            String suffix = (new Date().getDate() != 1) ? "-1" : "-2";
-            frameImage = ImageIO.read(new File(FRAME_PATH + frameId + suffix + "." + EXT));
+    @Async
+    public CompletableFuture<String> mergeImagesAsync(List<String> imageFiles,
+                                                      int groupId,
+                                                      int frameId,
+                                                      String date,
+                                                      String timeStamp,
+                                                      String UPLOAD_PATH,
+                                                      String FRAME_PATH,
+                                                      String OUTPUT_PATH) {
+        try {
+            String result = mergeImages(imageFiles, groupId, frameId, date, timeStamp, UPLOAD_PATH, FRAME_PATH, OUTPUT_PATH);
+            return CompletableFuture.completedFuture(result);
+        } catch (IOException e) {
+            CompletableFuture<String> future = new CompletableFuture<>();
+            future.completeExceptionally(e);
+            return future;
         }
-
-        frameImageCache.put(frameId, frameImage); // 캐싱
-        return frameImage;
     }
 
     /** 프레임에 텍스트 추가

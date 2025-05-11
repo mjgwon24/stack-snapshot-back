@@ -55,20 +55,35 @@
 
 ## 🔧 주요 기능
 
+### **메인**
+
+<img width="429" alt="image" src="https://github.com/user-attachments/assets/3f7a3417-2a67-445d-bae0-52e841d46f16" />
+
+
 ### **프레임 선택** 
 - 다양한 프레임 중에서 원하는 디자인을 선택하여 사진에 적용할 수 있습니다.
+
+<img width="429" alt="image" src="https://github.com/user-attachments/assets/a9077b9f-0cad-4443-b3bf-6ff9c0a89ff1" />
 
 
 ### **사진 촬영** 
 - 사용자는 카메라를 통해 실시간으로 사진을 촬영할 수 있습니다.
 
+<img width="429" alt="image" src="https://github.com/user-attachments/assets/d894e0a2-a0d7-464f-8d96-386ccba44c00" />
+
+<img width="429" alt="image" src="https://github.com/user-attachments/assets/8f9d0bad-04c9-411b-9b55-53dafcf73c39" />
+
 
 ### **사진 선택** 
 - 사용자가 원하는 사진을 선택하고 편집할 수 있습니다.
 
+<img width="429" alt="image" src="https://github.com/user-attachments/assets/c106a510-5abb-4e69-9712-dfe0d66e90ea" />
+
 
 ### **QR 코드 다운로드** 
 - QR 코드를 생성하여 사진 다운로드 링크를 제공합니다.
+
+<img width="429" alt="image" src="https://github.com/user-attachments/assets/2a0f7772-5bc6-4258-a015-f82857e0cadd" />
 
 <img width="429" alt="image" src="https://github.com/user-attachments/assets/50f50c83-af83-4097-a7c7-779281634d9a" />
 

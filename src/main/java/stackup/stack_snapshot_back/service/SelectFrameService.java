@@ -9,6 +9,8 @@ import org.springframework.stereotype.Service;
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.awt.image.ColorModel;
+import java.awt.image.WritableRaster;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -38,20 +40,22 @@ public class SelectFrameService {
     final String FONTNAME = "Pretendard";
     final String EXT = "png";
 
+    public static BufferedImage deepCopy(BufferedImage original) {
+        ColorModel cm = original.getColorModel();
+        boolean isAlphaPremultiplied = cm.isAlphaPremultiplied();
+        WritableRaster raster = original.copyData(null);
+        return new BufferedImage(cm, raster, isAlphaPremultiplied, null);
+    }
+
     /** 프레임 이미지 로드
      * @param FRAME_PATH 프레임 경로
      * @param frameId 프레임 ID
      * @return BufferedImage 프레임 이미지
      */
     private BufferedImage loadFrameImage(String FRAME_PATH, int frameId) throws IOException {
-        if (frameImageCache.containsKey(frameId)) return frameImageCache.get(frameId);
+        if (frameImageCache.containsKey(frameId)) return deepCopy(frameImageCache.get(frameId));
         BufferedImage frameImage;
-        if (frameId != 4) {
-            frameImage = ImageIO.read(new File(FRAME_PATH + frameId + "." + EXT));
-        } else {
-            String suffix = (new java.util.Date().getDate() != 1) ? "-1" : "-2";
-            frameImage = ImageIO.read(new File(FRAME_PATH + frameId + suffix + "." + EXT));
-        }
+        frameImage = ImageIO.read(new File(FRAME_PATH + frameId + "." + EXT));
         frameImageCache.put(frameId, frameImage);
         return frameImage;
     }
@@ -201,7 +205,7 @@ public class SelectFrameService {
         try {
             // 프레임 이미지 로드 (loadFrameImage - 캐싱된 이미지 사용)
             BufferedImage baseImage = loadFrameImage(FRAME_PATH, frameId);
-            BufferedImage secondBaseImage = frameId != 4 ? baseImage : loadFrameImage(FRAME_PATH, frameId);
+            BufferedImage secondBaseImage = loadFrameImage(FRAME_PATH, frameId);
 
             // Graphics2D 객체 생성
             Graphics2D frame = baseImage.createGraphics();
@@ -209,17 +213,26 @@ public class SelectFrameService {
             // 프레임에 들어갈 이미지 그리기
             for (int i = 0; i < imageCount; i++) {
                 BufferedImage image = ImageIO.read(new File(UPLOAD_PATH + "group" + groupId + "/" + imageFiles.get(i)));
-                frame.drawImage(image, OFFSET[frameId - 1][i][0], OFFSET[frameId - 1][i][1], null);
-            }
 
+                int originalWidth = image.getWidth();
+                int originalHeight = image.getHeight();
+
+                int width = IMAGE_SIZE_AT_FRAME[frameId-1][0];
+                int height = IMAGE_SIZE_AT_FRAME[frameId-1][1];
+
+                int x = (originalWidth - width) / 2;
+                int y = (originalHeight - height) / 2;
+
+                BufferedImage subImage = image.getSubimage(x, y, width, height);
+
+                frame.drawImage(subImage, OFFSET[frameId - 1][i][0], OFFSET[frameId - 1][i][1], null);
+            }
             // 두 번째 프레임 이미지 덮어쓰기
             frame.drawImage(secondBaseImage, 0, 0, null);
 
-            // 텍스트 추가 (frameId가 4가 아닌 경우)
-            if (frameId != 4) {
-                String currentDate = generateCurrentDate();
-                addTextToFrame(frame, currentDate, frameId);
-            }
+            // 텍스트 추가
+            String currentDate = generateCurrentDate();
+            addTextToFrame(frame, currentDate, frameId);
 
             frame.dispose();
 

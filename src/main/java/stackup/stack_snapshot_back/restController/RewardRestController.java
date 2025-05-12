@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import stackup.stack_snapshot_back.dto.RewardResponseDto;
 import stackup.stack_snapshot_back.entity.RewardStatus;
 import stackup.stack_snapshot_back.service.RewardService;
 
@@ -18,7 +19,7 @@ import stackup.stack_snapshot_back.service.RewardService;
 public class RewardRestController {
     private final RewardService rewardService;
     @GetMapping
-    public ResponseEntity<RewardStatus> requestReward() {
+    public ResponseEntity<RewardResponseDto> requestReward() {
         return ResponseEntity.ok(rewardService.getReward());
     }
 }

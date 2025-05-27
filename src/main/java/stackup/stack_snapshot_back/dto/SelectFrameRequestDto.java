@@ -1,15 +1,14 @@
 package stackup.stack_snapshot_back.dto;
 
-import lombok.*;
+import lombok.Builder;
+import lombok.Getter;
 
 import java.util.List;
 
 @Getter
 @Builder
-@NoArgsConstructor
-@AllArgsConstructor
 public class SelectFrameRequestDto {
-    private Integer selectedFrameId;
-    private Integer groupId;
-    private List<String> selectPhotoNames;
+    private final Integer selectedFrameId;
+    private final Integer groupId;
+    private final List<String> selectPhotoNames;
 }

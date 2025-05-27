@@ -42,9 +42,6 @@ public class Reward {
     public void choice(){
         this.remainingCount -= 1;
         this.totalCount += 1;
-        if(this.remainingCount == 0){
-            this.isAvailable = false;
-        }
     }
 
     public void setAvailable(Boolean available){

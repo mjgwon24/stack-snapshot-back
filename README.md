@@ -1,12 +1,15 @@
+# 📸 Stack Snapshot (Backend) - 사진 추억 남기기 서비스
 
-# 🧑‍💻 Stack Snapshot (Backend) - 사진 추억 남기기 서비스
+[![Contributors](https://img.shields.io/badge/contributors-5-brightgreen)](#-기여자-contributors) 
 
-<img width="1725" alt="스크린샷 2024-12-03 18 06 21" src="https://github.com/user-attachments/assets/c65b1d28-420b-4349-8791-9afb76e213e5">
+<img width="1725" alt="스크린샷 2024-12-03 18 06 21" src="https://github.com/user-attachments/assets/26b195e4-88fb-4de5-bc52-25f1e550c0e0">
 
-**Stack Snapshot**은 '인생네컷'과 유사한 기능을 제공하는 사진 추억 남기기 서비스로, **경북 2024 해커톤**에서 참가자들의 소중한 추억을 기록해주는 프로젝트입니다. 사용자는 다양한 프레임을 적용해 사진을 찍고, 소중한 추억을 남길 수 있습니다.
 
-<br/>
-<br/>
+스택네컷(Stack Snapshot) 은 행사장에서 참가자들이 직접 촬영한 네컷사진을 제공하는 서비스입니다. 사용자는 원하는 사진을 선택하고 프레임을 적용한 후, QR 코드를 통해 즉시 다운로드할 수 있습니다. 또한, 부가 서비스인 경품 이벤트(뽑기 게임)를 통해 행사 참여도를 높입니다.
+
+2024 경북 해커톤 행사에서 이벤트성 서비스로 사용되었으며, 약 60명의 해커톤 참가자에게 소중한 추억을 제공했습니다. 해커톤 현장에서 요구되는 빠른 응답 속도, 안정적인 서버 운영, 대학생들이 관심을 가질만한 UI/UX를 고려하여 개발되었으며, 실사용자 피드백을 바탕으로 기능을 개선하여 추후 행사에서도 활용 가능하도록 고도화하였습니다.
+
+---
 
 ## 🧑‍💻 기여자
 [![Contributors](https://img.shields.io/badge/contributors-5-brightgreen)](#-기여자-contributors)  
@@ -20,109 +23,79 @@
 | **김현나** | [nanaring1](https://github.com/nanaring1) | frontend                | JavaScript, React |
 | **구세영** | [wybh930](https://github.com/wybh930) | frontend               | JavaScript, React |
 
-<br/>
-<br/>
+---
 
-## 🛠️ 개발 환경
+## 🗓️ WBS
+<img width="600" alt="image" src="https://github.com/user-attachments/assets/f3703bb0-42cc-49ee-8a94-9d5035287c37" />
 
-### 협업 툴
-   ![GitHub](https://img.shields.io/badge/GitHub-181717?style=flat&logo=github&logoColor=white)  ![Discord](https://img.shields.io/badge/Discord-5865F2?style=flat&logo=discord&logoColor=white)   ![Notion](https://img.shields.io/badge/Notion-000000?style=flat&logo=notion&logoColor=white)
+---
 
-### 서비스 배포 환경
-  ![Ubuntu](https://img.shields.io/badge/Ubuntu-E95420?style=for-the-badge&logo=ubuntu&logoColor=white) ![Nginx](https://img.shields.io/badge/nginx-%23009639.svg?style=for-the-badge&logo=nginx&logoColor=white)
+## 🛠️ 기술 스택 및 아키텍처
 
-<br/>
-<br/>
+<img width="700" alt="image" src="https://github.com/user-attachments/assets/d8f9e4cb-d893-4e93-ba7b-d2edd290883c" />
 
-## 🔧 기술 스택
+- **Backend**
+   - Java
+   - Gradle
+   - Spring Boot
+   - MySQL
+   - JPA
+   - Swagger
+- **배포**
+   - Ubuntu
+   - Nginx
+   - Naver Cloud Server
+- **협업 및 테스트**
+    - Git
+    - Notion
+    - Postman
+    - Figma
 
-### Language  
-![Java](https://img.shields.io/badge/Java-007396?style=flat&logo=java&logoColor=white)
-
-### Backend  
-![Spring Boot](https://img.shields.io/badge/Spring%20Boot-6DB33F?style=flat&logo=spring-boot&logoColor=white)  ![Gradle](https://img.shields.io/badge/Gradle-02303A?style=flat&logo=gradle&logoColor=white)  ![Swagger](https://img.shields.io/badge/Swagger-85EA2D?style=flat&logo=swagger&logoColor=black)  ![REST API](https://img.shields.io/badge/REST%20API-005571?style=flat&logo=rest&logoColor=white)
-
-### Cooperation  
-![GitHub](https://img.shields.io/badge/GitHub-181717?style=flat&logo=github&logoColor=white)  ![GitHub Projects](https://img.shields.io/badge/Projects-0366D6?style=flat&logo=github&logoColor=white)
-
-<br/>
-<br/>
-
-## 🔄 Development Workflow
-
-### 브랜치 전략
-
-브랜치 전략은 Git Flow를 기반으로 하며, 다음과 같은 브랜치를 사용합니다.
-
-- **Main Branch**:  
-    - 배포 가능한 상태의 코드를 유지합니다.  
-    - 모든 배포는 이 브랜치에서 이루어집니다.
-- **Develop Branch**:
-    - 기능 개발을 취합하는 브랜치입니다.
-- **Feature Branches**:  
-    - 기능별로 분기한 브랜치입니다.
-    - 각 기능 개발은 `feature/{기능명}` 형식의 브랜치에서 이루어지며, 작업 완료 후 Develop Branch로 병합됩니다.
-
-<br/>
-<br/>
+---
 
 ## 🔧 주요 기능
 
-- **사진 찍기:** 사용자는 다양한 필터를 적용하여 사진을 찍을 수 있습니다.
-- **추억 저장:** 최종적으로 생성된 사진을 다운로드할 수 있습니다.
-- **QR 코드 제공:** 사진이 생성된 후, 다운로드를 위한 QR 코드가 제공됩니다.
+### **메인**
 
-<br/>
-<br/>
-
-## 📅 개발 기간
-
-- **개발 기간**: 2024년 10월 13일 ~ 2024년 11월 20일  
-
-<br/>
-<br/>
-
-## 📑 페이지별 기능
-
-### [ 프레임 선택 ]
-다양한 프레임 중에서 원하는 디자인을 선택하여 사진에 적용할 수 있습니다.
-
-<img width="950" alt="스크린샷 2024-12-03 18 43 20" src="https://github.com/user-attachments/assets/bfe759ba-07e4-47cd-9212-f4bcdc91dfc0">
-
-<br/>
-
-### [ 사진 촬영 ]
-
-사용자는 카메라를 통해 실시간으로 사진을 촬영할 수 있습니다.
-
-<img width="950" alt="스크린샷 2024-12-03 18 43 20" src="https://github.com/user-attachments/assets/623f892d-0965-4bb4-a3eb-4ed9b99676e2">
-
-<br/>
-
-### [ 사진 선택 ]
-
-사용자가 원하는 사진을 선택하고 편집할 수 있습니다.
-
-<img width="950" alt="스크린샷 2024-12-03 19 23 21" src="https://github.com/user-attachments/assets/f48ed16e-5369-4fe8-8db6-8349e64ccd8f">
-
-<br/>
-### [ QR 코드 다운로드 ]
-
-QR 코드를 생성하여 사진 다운로드 링크를 제공합니다.
-
-<img width="950" alt="스크린샷 2024-12-03 19 25 06" src="https://github.com/user-attachments/assets/5ee50394-9f66-4300-93eb-a6bd961c0b49">
-<img width="950" alt="스크린샷 2024-12-03 19 26 33" src="https://github.com/user-attachments/assets/8c373a49-7bab-4bd6-9e1e-58ac78b8021f">
-<br/>
-### [ 경품 뽑기 ]
-
-이벤트 경품 뽑기 페이지를 통해 경품을 뽑을 수 있습니다.
-
-<img width="950" alt="스크린샷 2024-12-03 19 28 14" src="https://github.com/user-attachments/assets/b6ae2e7f-ed93-41eb-aab0-6463a1c2934b">
-<img width="950" alt="스크린샷 2024-12-03 19 28 39" src="https://github.com/user-attachments/assets/5b25d942-d2db-4f52-9751-526b3767a1ae">
+<img width="429" alt="image" src="https://github.com/user-attachments/assets/3f7a3417-2a67-445d-bae0-52e841d46f16" />
 
 
-<br/>
-<br/>
+### **프레임 선택** 
+- 다양한 프레임 중에서 원하는 디자인을 선택하여 사진에 적용할 수 있습니다.
+
+<img width="429" alt="image" src="https://github.com/user-attachments/assets/a9077b9f-0cad-4443-b3bf-6ff9c0a89ff1" />
+
+
+### **사진 촬영** 
+- 사용자는 카메라를 통해 실시간으로 사진을 촬영할 수 있습니다.
+
+<img width="429" alt="image" src="https://github.com/user-attachments/assets/d894e0a2-a0d7-464f-8d96-386ccba44c00" />
+
+<img width="429" alt="image" src="https://github.com/user-attachments/assets/8f9d0bad-04c9-411b-9b55-53dafcf73c39" />
+
+
+### **사진 선택** 
+- 사용자가 원하는 사진을 선택하고 편집할 수 있습니다.
+
+<img width="429" alt="image" src="https://github.com/user-attachments/assets/c106a510-5abb-4e69-9712-dfe0d66e90ea" />
+
+
+### **QR 코드 다운로드** 
+- QR 코드를 생성하여 사진 다운로드 링크를 제공합니다.
+
+<img width="429" alt="image" src="https://github.com/user-attachments/assets/2a0f7772-5bc6-4258-a015-f82857e0cadd" />
+
+<img width="429" alt="image" src="https://github.com/user-attachments/assets/50f50c83-af83-4097-a7c7-779281634d9a" />
+
+
+### **경품 뽑기** 
+- 이벤트 경품 뽑기 페이지를 통해 경품을 뽑을 수 있습니다.
+
+<img width="429" alt="image" src="https://github.com/user-attachments/assets/bc22b766-068d-499d-bf22-2dcb649ee5ca" />
+
+<img width="429" alt="image" src="https://github.com/user-attachments/assets/dafe63b4-1293-4a57-a746-44607bfc2abc" />
+
+---
 
 ## 📬 프로젝트 후기
 
@@ -193,3 +166,7 @@ _스택네컷 팀장_
 다음 프로젝트에선 공정을 최소화하여 기능구현 뿐 아니라 검증도 철저히 해보고 싶습니다.💛<br/>
 
 <br/>
+
+---
+
+![Frame 5806](https://github.com/user-attachments/assets/dbc33e43-ec84-49a7-bfa4-16a90aaefbea)

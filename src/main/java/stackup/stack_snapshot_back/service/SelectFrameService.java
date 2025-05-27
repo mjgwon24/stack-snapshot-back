@@ -40,25 +40,33 @@ public class SelectFrameService {
     final String FONTNAME = "Pretendard";
     final String EXT = "png";
 
-    public static BufferedImage deepCopy(BufferedImage original) {
-        ColorModel cm = original.getColorModel();
-        boolean isAlphaPremultiplied = cm.isAlphaPremultiplied();
-        WritableRaster raster = original.copyData(null);
-        return new BufferedImage(cm, raster, isAlphaPremultiplied, null);
-    }
+
 
     /** 프레임 이미지 로드
      * @param FRAME_PATH 프레임 경로
      * @param frameId 프레임 ID
      * @return BufferedImage 프레임 이미지
      */
-    private BufferedImage loadFrameImage(String FRAME_PATH, int frameId) throws IOException {
-        if (frameImageCache.containsKey(frameId)) return deepCopy(frameImageCache.get(frameId));
-        BufferedImage frameImage;
-        frameImage = ImageIO.read(new File(FRAME_PATH + frameId + "." + EXT));
-        frameImageCache.put(frameId, frameImage);
-        return frameImage;
+    public static BufferedImage deepCopy(BufferedImage original) {
+        BufferedImage copy = new BufferedImage(
+                original.getWidth(),
+                original.getHeight(),
+                original.getType()
+        );
+        Graphics2D g = copy.createGraphics();
+        g.drawImage(original, 0, 0, null);
+        g.dispose();
+        return copy;
     }
+    private BufferedImage loadFrameImage(String FRAME_PATH, int frameId) throws IOException {
+        if (frameImageCache.containsKey(frameId)) {
+            return deepCopy(frameImageCache.get(frameId));
+        }
+        BufferedImage original = ImageIO.read(new File(FRAME_PATH + frameId + "." + EXT));
+        frameImageCache.put(frameId, original);
+        return deepCopy(original);
+    }
+
 
     final int[] FONT_SIZE_AT_FRAME = {
             12,
@@ -81,7 +89,7 @@ public class SelectFrameService {
             new Color(235,235,235),//frame1 EBEBEB 235 235 235
             new Color(113,122,127),//frame2 717A7F 113 122 127
             new Color(191, 170, 15),//frame3 BFAA0F 191 170 15
-            new Color(255, 255, 255),//frame4
+            new Color(255, 177, 111),//frame4
     };
 
     // 프레임별 텍스트 오프셋
@@ -96,7 +104,7 @@ public class SelectFrameService {
                     514,885
             },//frame3
             {
-                    0,0
+                    772,505
             }//frame4
     };
 
@@ -193,43 +201,40 @@ public class SelectFrameService {
                               String UPLOAD_PATH,
                               String FRAME_PATH,
                               String OUTPUT_PATH) throws IOException {
+
+        frameId += 1;
         if(FRAME_PATH == null) throw new IllegalArgumentException("FRAME_PATH가 null입니다.");
         if(frameId < 1 || frameId > 4) throw new IllegalArgumentException("FrameId의 범위는 1~4입니다.");
-
         // 프레임에 따라 이미지 개수 결정
         int imageCount = OFFSET[frameId - 1].length;
         if (imageFiles.size() != imageCount) {
             throw new IllegalArgumentException("이미지 파일의 개수가 프레임에 맞지 않습니다. : " + imageFiles.size() + "/" + imageCount);
         }
-
         try {
             // 프레임 이미지 로드 (loadFrameImage - 캐싱된 이미지 사용)
             BufferedImage baseImage = loadFrameImage(FRAME_PATH, frameId);
-            BufferedImage secondBaseImage = loadFrameImage(FRAME_PATH, frameId);
 
+
+            BufferedImage secondBaseImage = loadFrameImage(FRAME_PATH, frameId);
             // Graphics2D 객체 생성
             Graphics2D frame = baseImage.createGraphics();
 
             // 프레임에 들어갈 이미지 그리기
             for (int i = 0; i < imageCount; i++) {
                 BufferedImage image = ImageIO.read(new File(UPLOAD_PATH + "group" + groupId + "/" + imageFiles.get(i)));
-
                 int originalWidth = image.getWidth();
                 int originalHeight = image.getHeight();
-
                 int width = IMAGE_SIZE_AT_FRAME[frameId-1][0];
                 int height = IMAGE_SIZE_AT_FRAME[frameId-1][1];
 
                 int x = (originalWidth - width) / 2;
                 int y = (originalHeight - height) / 2;
-
                 BufferedImage subImage = image.getSubimage(x, y, width, height);
 
                 frame.drawImage(subImage, OFFSET[frameId - 1][i][0], OFFSET[frameId - 1][i][1], null);
             }
             // 두 번째 프레임 이미지 덮어쓰기
             frame.drawImage(secondBaseImage, 0, 0, null);
-
             // 텍스트 추가
             String currentDate = generateCurrentDate();
             addTextToFrame(frame, currentDate, frameId);
@@ -238,11 +243,9 @@ public class SelectFrameService {
 
             // 파일명 생성
             String fileName = "group_" + groupId + "_final_" + date + "_" + timeStamp + ".png";
-
             // 최종 파일 생성 및 저장
             File outputFile = new File(OUTPUT_PATH + fileName);
             ImageIO.write(baseImage, EXT, outputFile);
-
             return fileName;
         } catch (Exception e) {
             throw new IOException("이미지 파일 읽기중 문제가 생겼습니다.:"+e);

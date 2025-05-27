@@ -2,8 +2,9 @@ package stackup.stack_snapshot_back.entity;
 
 public enum RewardStatus {
     USB,
-    GIFTICON,
+    GIFTICON50000,
+    GIFTICON30000,
+    GIFTICON10000,
     CANDY,
-    BATTERY,
     FAIL
 }

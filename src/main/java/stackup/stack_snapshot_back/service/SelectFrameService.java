@@ -213,9 +213,6 @@ public class SelectFrameService {
         try {
             // 프레임 이미지 로드 (loadFrameImage - 캐싱된 이미지 사용)
             BufferedImage baseImage = loadFrameImage(FRAME_PATH, frameId);
-            // 최종 파일 생성 및 저장
-            File outputFiletest = new File(OUTPUT_PATH + "testFrame.png");
-            ImageIO.write(baseImage, EXT, outputFiletest);
 
 
             BufferedImage secondBaseImage = loadFrameImage(FRAME_PATH, frameId);
@@ -224,7 +221,6 @@ public class SelectFrameService {
 
             // 프레임에 들어갈 이미지 그리기
             for (int i = 0; i < imageCount; i++) {
-                System.out.println(UPLOAD_PATH + "group" + groupId + "/" + imageFiles.get(i));
                 BufferedImage image = ImageIO.read(new File(UPLOAD_PATH + "group" + groupId + "/" + imageFiles.get(i)));
                 int originalWidth = image.getWidth();
                 int originalHeight = image.getHeight();
@@ -266,10 +262,6 @@ public class SelectFrameService {
                                                       String FRAME_PATH,
                                                       String OUTPUT_PATH) {
         try {
-            System.out.println(groupId);
-            System.out.println(frameId);
-            System.out.println(date);
-            System.out.println(timeStamp);
             String result = mergeImages(imageFiles, groupId, frameId, date, timeStamp, UPLOAD_PATH, FRAME_PATH, OUTPUT_PATH);
             return CompletableFuture.completedFuture(result);
         } catch (IOException e) {
